@@ -190,6 +190,7 @@
 					taskId: tid,					
 				}).then( res =>{
 						if(res.code == '200'){
+							this.$u.vuex('vuex_task',res.data);
 							this.form = res.data;
 							this.form.progress = Math.round(res.data.quantityProduced/res.data.quantity,0);
 						}
@@ -202,7 +203,12 @@
 					taskId: this.form.taskId,
 					status: status
 				}).then( res =>{
-						if(res.code == '200'){							
+						if(res.code == '200'){		
+							this.getTaskList();
+							if(status=='FINISHED'){
+								this.$u.vuex('vuex_task',null);
+								this.form ={};
+							}							
 							this.$u.toast('变更成功');
 						}
 					}				
@@ -224,7 +230,8 @@
 			},
 			doFeedback(){
 				this.reset();
-				this.feedbackForm.nickName = this.vuex_user.userName
+				this.feedbackForm.nickName = this.vuex_user.nickName;
+				this.feedbackForm.userName = this.vuex_user.userName;
 				this.open = true;
 			},
 			cancel(){

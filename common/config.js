@@ -21,6 +21,8 @@ const config = {
 }
 
 // 设置后台接口服务的基础地址
-config.baseUrl = 'http://localhost:8080';
+//config.baseUrl = 'http://localhost:8080';
+//config.baseUrl = "http://101.43.244.58:8080/";
+config.baseUrl = "/api";
 
 export default config;

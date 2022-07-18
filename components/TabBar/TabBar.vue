@@ -20,8 +20,5 @@
 		margin-left: 0px;
         box-shadow: 2px 0 1px rgba(100,100,100,.6);
     }
-	
-	#tab-bar .tab-bar-item{
 
-	}
 </style>

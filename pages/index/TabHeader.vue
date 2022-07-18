@@ -1,21 +1,24 @@
 <template>
     <tab-bar class="bar">
-        <tab-bar-item path="/pages/mes/pro/index" activeColor="mediumturquoise">
+        <tab-bar-item path="/pages/mes/pro/index" activeColor="black" class="tab-bar-item" style="border-top-left-radius: 5px;">
             <template v-slot:item-text><div class="title-style">生产</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/pro.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/pro.png')" alt=""></template>
         </tab-bar-item>
-        <tab-bar-item path="/pages/mes/gx/index" activeColor="mediumturquoise">
+		<el-divider direction="vertical" class='divider'></el-divider>
+        <tab-bar-item path="/pages/mes/gx/index" activeColor="black">
             <template v-slot:item-text><div class="title-style">工序</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/gx.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/gx.png')" alt=""></template>
         </tab-bar-item>
-        <tab-bar-item path="/pages/mes/qc/index" activeColor="mediumturquoise">
+		<el-divider direction="vertical" class='divider'></el-divider>
+        <tab-bar-item path="/pages/mes/qc/index" activeColor="black">
             <template v-slot:item-text><div class="title-style">质量</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/qc.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/qc.png')" alt=""></template>
         </tab-bar-item>
-        <tab-bar-item path="/pages/mes/dev/index" activeColor="mediumturquoise">
+		<el-divider direction="vertical" class='divider'></el-divider>
+        <tab-bar-item path="/pages/mes/dev/index" activeColor="black">
             <template v-slot:item-text><div class="title-style">设备</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/dev.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/dev.png')" alt=""></template>
@@ -49,15 +52,33 @@
         cursor: pointer;
     }
     .title-style:hover {
-        color: #48decc;
+        color: black;
     }
+	
+	.bar{
+		background: linear-gradient(to top,rgb(205 204 209),rgb(230 226 223));
+	}
+	.tab-bar-item{
+		width: 90px;
+		height: 70px;
+		padding: 5px;
+	}
  
     .hengxian {
 		margin: auto;
-		text-align: center;
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
+		margin-top: 5px;
     }
+	.divider{
+		background-color: #b9bdbd;
+		margin: 5px 0px;
+		height: 70px;
+	}
+	
+	.active{
+		background-color: white;
+	}
 	
 	.Hline{
 	 	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));

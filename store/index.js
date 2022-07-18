@@ -16,7 +16,7 @@ try{
 }
 
 // 需要永久存储，且下次APP启动需要取出的，在state中的变量名
-let saveStateKeys = ['vuex_user', 'vuex_token', 'vuex_remember', 'vuex_locale','vuex_isAgent','vuex_workstation','vuex_task'];
+let saveStateKeys = ['vuex_user', 'vuex_token', 'vuex_remember', 'vuex_locale','vuex_isAgent','vuex_workstation'];
 
 // 保存变量到本地存储中
 const saveLifeData = function(key, value){
@@ -45,11 +45,29 @@ const store = new Vuex.Store({
 		// 如果vuex_version无需保存到本地永久存储，无需lifeData.vuex_version方式
 		vuex_config: config,
 		
-		//当前触控屏的工作站
 		vuex_workstation: null,
 		
-		//当前触控屏执行的生产任务
-		vuex_task: null,		
+		// 自定义tabbar数据
+		// vuex_tabbar: [{
+		// 		iconPath: "/static/uview/example/component.png",
+		// 		selectedIconPath: "/static/uview/example/component_select.png",
+		// 		text: '组件',
+		// 		pagePath: '/pages/example/components'
+		// 	},
+		// 	{
+		// 		iconPath: "/static/uview/example/js.png",
+		// 		selectedIconPath: "/static/uview/example/js_select.png",
+		// 		text: '工具',
+		// 		midButton: true,
+		// 		pagePath: '/pages/example/js'
+		// 	},
+		// 	{
+		// 		iconPath: "/static/uview/example/template.png",
+		// 		selectedIconPath: "/static/uview/example/template_select.png",
+		// 		text: '模板',
+		// 		pagePath: '/pages/example/template'
+		// 	}
+		// ]
 	},
 	mutations: {
 		$uStore(state, payload) {

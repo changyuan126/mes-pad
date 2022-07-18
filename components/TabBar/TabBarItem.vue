@@ -1,7 +1,7 @@
 <template>
     <div class="tab-bar-item" :class="isActive? 'active':'inActive'"  @click="itemClick">
-		<div v-if="!isActive"><slot name="item-icon"></slot></div>
-		<div v-else><slot name="item-icon-active"></slot></div>
+		<div v-if="!isActive" style='text-align: center;'><slot name="item-icon"></slot></div>
+		<div v-else style='text-align: center;'><slot name="item-icon-active"></slot></div>
         <div :style="activeStyle"><slot name="item-text"></slot></div>
     </div>
 </template>

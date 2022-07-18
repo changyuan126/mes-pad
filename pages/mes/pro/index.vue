@@ -1,43 +1,35 @@
 <template>
 	<view class="commonBody">
 		<el-row :gutter="20">
-			<el-col :span="10">
+			<el-col :span="11">
 				<scroll-view scroll-y="true" class="scroll-Y">
-					<el-table
-					  :data="tableData"
-					  style="width: 100%">
-					    <el-table-column
-							prop="itemName"
-							label="产品名称"
-							width="100">
-					    </el-table-column>
-						<el-table-column
-							prop="quantity"
-							label="任务数量"
-							width="80">
-						</el-table-column>
-						<el-table-column label="排产时间" align="center" prop="startTime" width="100">
-						    <template slot-scope="scope">
-						        <span>{{ parseTime(scope.row.startTime, '{y}-{m}-{d}') }}</span>
-						    </template>
-						</el-table-column>
-						<el-table-column
-							prop="address"
-							label="操作">
-							<template slot-scope="scope">
-								<el-button
-									size="mini"	
-									type="primary"
-									icon="el-icon-refresh"
-									@click="shiftTask(scope.row.taskId)"
-								  >切换</el-button>
-							</template>
-						</el-table-column>
-					</el-table>
+					
+					<el-card class="box-card" v-for="item in tableData">
+						<el-row>
+						  <el-col :span="14" class="item"><div class="name">任务编号：</div><div class="value">{{item.taskCode}}</div></el-col>
+						  <el-col :span="10" class="item"><div class="name">任务状态：</div><el-tag type="success" size="small" class="value">{{item.status}}</el-tag></el-col>
+						</el-row>
+						<el-row>
+						  <el-col :span="14" class="item"><div class="name">产品编码：</div><div class="value">{{item.itemCode}}</div></el-col>
+						  <el-col :span="10" class="item"><div class="name">产品名称：</div><div class="value">{{item.itemName}}</div></el-col>
+						</el-row>
+						<el-row>
+						  <el-col :span="14" class="item"><div class="name">排产数量：</div><div class="value">{{item.quantity}}</div></el-col>
+						  <el-col :span="10" class="item"><div class="name">生成数量：</div><div class="value">{{item.quantityProduced}}</div></el-col>
+						</el-row>
+						<el-button class="btn"
+							size="mini"	
+							type="primary"
+							icon="el-icon-refresh"
+							@click="shiftTask(item.taskId)"
+						  >切换</el-button>
+					</el-card>
+					
+					
 				</scroll-view>				
 			</el-col>
-			<el-col :span="14">
-				<el-row :gutter="20" style="margin-top: 20px;">
+			<el-col :span="13">
+				<el-row :gutter="10" style="margin-top: 20px;" justify="center" type="flex">
 					<el-col :span="6">
 						<el-button type="primary" v-if="form.status =='NORMAL'" @click="changeStatus('START')" icon="el-icon-video-play">开始</el-button>
 						<el-button type="primary" v-else-if="form.status =='START'" @click="changeStatus('PAUSE')" icon="el-icon-video-play">暂停</el-button>
@@ -81,16 +73,16 @@
 							</div>
 						</el-dialog>
 					</el-col>
-					<el-col :span="6"></el-col>
+					
 				</el-row>
 				<el-row :gutter="20">
-					<el-col :span="24">
+					<el-col :span="21">
 						<el-progress :text-inside="true" :stroke-width="26" :percentage="form.progress" status="success"></el-progress>
 					</el-col>					
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="24">
-						<el-form :inline="true" label-width="80px" size="small" :model="form" >
+						<el-form :inline="true" label-width="80px" size="small" :model="form" label-position="left">
 							<el-row>
 								<el-col :span="12">
 									<el-form-item label="产品名称" prop="itemName">
@@ -143,12 +135,12 @@
 					</el-col>
 				</el-row>
 				<el-row>
-					<el-col :span="8">
+					<el-col :span="6" :offset="6">
 						<el-button type="primary" icon="el-icon-video-play">SOP</el-button>
 					</el-col>
-					<el-col :span="8">
+					<el-col :span="6">
 						<el-button type="primary" icon="el-icon-video-play">SIP</el-button>
-					</el-col>					
+					</el-col>
 				</el-row>
 			</el-col>
 		</el-row>
@@ -181,6 +173,7 @@
 				}).then( res =>{
 						if(res.code == '200'){
 							this.tableData = res.data;
+							console.log(this.tableData);
 						}
 					}				
 				);
@@ -190,7 +183,6 @@
 					taskId: tid,					
 				}).then( res =>{
 						if(res.code == '200'){
-							this.$u.vuex('vuex_task',res.data);
 							this.form = res.data;
 							this.form.progress = Math.round(res.data.quantityProduced/res.data.quantity,0);
 						}
@@ -203,12 +195,7 @@
 					taskId: this.form.taskId,
 					status: status
 				}).then( res =>{
-						if(res.code == '200'){		
-							this.getTaskList();
-							if(status=='FINISHED'){
-								this.$u.vuex('vuex_task',null);
-								this.form ={};
-							}							
+						if(res.code == '200'){							
 							this.$u.toast('变更成功');
 						}
 					}				
@@ -230,8 +217,7 @@
 			},
 			doFeedback(){
 				this.reset();
-				this.feedbackForm.nickName = this.vuex_user.nickName;
-				this.feedbackForm.userName = this.vuex_user.userName;
+				this.feedbackForm.nickName = this.vuex_user.userName
 				this.open = true;
 			},
 			cancel(){
@@ -269,5 +255,32 @@
 	
 	.el-row{
 		margin-bottom: 20px;
+	}
+	
+	.box-card{
+		width: 90%;
+		margin: 5%;
+	}
+	
+	
+	.box-card .item{
+		display: -webkit-box;
+	}
+	
+	.box-card .item .name{
+		width: 80px;
+	}
+	.box-card .item .value{
+		
+	}
+	
+	.box-card .el-card__body{
+		padding: 10px;
+	}
+	
+	.box-card .btn{
+		display: block;
+		margin: auto;
+		width: 140px;
 	}
 </style>

@@ -41,13 +41,15 @@ const install = (Vue, vm) => {
 		 * 工艺工序相关API
 		 */
 		//生产投料
-		addTaskIssue: (params = {}) => vm.$u.post(config.adminPath+'/mobile/pro/taskissue/add',params),
+		addTaskIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/add',params),
 		//整个领料单投料
-		addholeIssue: (params = {}) => vm.$u.post(config.adminPath+'/mobile/pro/taskissue/addIssue',params),
+		addholeIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/addIssue',params),
 		//获取当前工作站、当前生产任务对应的投料清单				
-		getIssueList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getIssueList',params),
+		getTaskIssueList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/transorder/getList',params),
+		//
+		getReserveIssue: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getReserveIssueList',params),
 		//获取当前产品/工序内容/作业指导书
-		getProcessContent: (params = {}) =>vm.$u.get(config.adminPath+'/mobile/pro/process/'),
+		getProcessContent: (params = {}) =>vm.$u.get(config.adminPath + '/mobile/pro/process/'),
 		//打印流转单
 		
 		

@@ -37,6 +37,21 @@ const install = (Vue, vm) => {
 		feedback: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/protask/feedback',params),
 		
 		
+		/**
+		 * 工艺工序相关API
+		 */
+		//生产投料
+		addTaskIssue: (params = {}) => vm.$u.post(config.adminPath+'/mobile/pro/taskissue/add',params),
+		//整个领料单投料
+		addholeIssue: (params = {}) => vm.$u.post(config.adminPath+'/mobile/pro/taskissue/addIssue',params),
+		//获取当前工作站、当前生产任务对应的投料清单				
+		getIssueList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getIssueList',params),
+		//获取当前产品/工序内容/作业指导书
+		getProcessContent: (params = {}) =>vm.$u.get(config.adminPath+'/mobile/pro/process/'),
+		//打印流转单
+		
+		
+		
 		//首页相关api
 		getIndexCardInfo: (params = {}) => vm.$u.get(config.adminPath+'/mobile/index/getIndexCardInfo', params),
 		getM2mOrderFlowList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/index/getM2mOrderFlowList', params),

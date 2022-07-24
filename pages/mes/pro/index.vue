@@ -165,6 +165,9 @@
 		},
 		created(){
 			this.getTaskList();
+			if(this.vuex_task !=null){
+				this.shiftTask(this.vuex_task.taskId);
+			}
 		},
 		methods:{
 			getTaskList(){
@@ -182,8 +185,9 @@
 				this.$u.api.getTaskInfo({
 					taskId: tid,					
 				}).then( res =>{
-						if(res.code == '200'){
+						if(res.code == '200'){							
 							this.form = res.data;
+							this.$u.vuex('vuex_task', res.data);
 							this.form.progress = Math.round(res.data.quantityProduced/res.data.quantity,0);
 						}
 					}				

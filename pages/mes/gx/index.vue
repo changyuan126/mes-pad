@@ -114,7 +114,7 @@
 											</el-form-item>
 										</el-col>
 										<el-col :span="12">
-											<el-form-item label="单位">
+											<el-form-item label="单 位">
 												<el-input disabled v-model="item.unitOfMeasure"></el-input>
 											</el-form-item>
 										</el-col>
@@ -122,18 +122,18 @@
 									<el-row>
 										<el-col :span="12">
 											<el-form-item label="领料数量">
-												<el-input disabled v-model="item.quantity_issued"></el-input>
+												<el-input disabled v-model="item.quantityIssued"></el-input>
 											</el-form-item>
 										</el-col>
 										<el-col :span="12">
 											<el-form-item label="已使用数量">
-												<el-input disabled v-model="item.quantity_used"></el-input>
+												<el-input disabled v-model="item.quantityUsed"></el-input>
 											</el-form-item>
 										</el-col>
 									</el-row>
 									<el-row>
 										<el-col :span="24">
-											<el-button type="warning" icon="el-icon-delete">移除</el-button>
+											<el-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</el-button>
 										</el-col>
 									</el-row>
 								</el-form>								
@@ -285,7 +285,24 @@
 					sourceLineId: row.lineId
 				}).then( res =>{
 						if(res.code == '200'){
-							this.getIssueList();//刷新投料清单						
+							this.$u.toast("操作成功!");
+							this.getIssueList();//刷新投料清单								
+						}else{
+							this.$u.toast(res.msg);
+						}						
+					}				
+				);
+			},
+			// 从投料清单中删除一条
+			handleRemove(item){
+				this.$u.api.removeTaskIssue({
+					recordId: item.recordId
+				}).then( res =>{
+						if(res.code == '200'){
+							this.getIssueList();//刷新投料清单	
+							this.$u.toast("操作成功!");
+						}else{
+							this.$u.toast(res.msg);
 						}
 					}				
 				);
@@ -296,7 +313,7 @@
 			//获取当前工作台、当前生产任务的投料清单
 			getIssueList(){
 				this.$u.api.getTaskIssueList({					
-					workstationId: 100
+					workstationId: this.vuex_workstation.workstationId
 				}).then( res =>{
 						if(res.code == '200'){
 							this.itemData = res.data;							
@@ -332,7 +349,7 @@
 	}
 	
 	.scroll-item{
-		height: 300px;
+		height: 400px;
 	}
 	
 	.attention{

@@ -44,9 +44,11 @@ const install = (Vue, vm) => {
 		addIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/add',params),
 		//整个领料单投料
 		addholeIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/addIssue',params),
+		//删除投料信息
+		removeTaskIssue: (params = {}) => vm.$u.post(config.adminPath+'/mobile/pro/taskissue/'+ params.recordId),
 		//获取当前工作站、当前生产任务对应的投料清单				
-		getTaskIssueList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/transorder/getList',params),
-		//
+		getTaskIssueList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getlist',params),
+		//查询可用的领料单
 		getReserveIssue: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getReserveIssueList',params),
 		//获取当前产品/工序内容/作业指导书
 		getProcessContent: (params = {}) =>vm.$u.get(config.adminPath + '/mobile/pro/process/'),

@@ -45,24 +45,46 @@
 					</el-col>
 				</el-row>
 				<el-dialog title="选择生产领料" :visible.sync="issueOpen" width="800px" append-to-body>
-					<el-table v-loading="loading" :data="issueList">
-						<el-table-column label="领料单编号" align="center" width="150px" prop="issueCode" />
-						<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
-						<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
-						<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 
-						<el-table-column label="批次号" align="center" prop="batchCode" />						
-						<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
-						<el-table-column label="操作" align="center" v-if="optType != 'view'" width="100px" class-name="small-padding fixed-width">
-						        <template slot-scope="scope">
-						          <el-button
-						            size="mini"
-						            type="text"
-						            icon="el-icon-circle-check"
-						            @click="handleAdd(scope.row)"						            
-						          >使用</el-button>
-						        </template>
-						      </el-table-column>
-					</el-table>
+					<el-tabs type="border-card">
+						<el-tab-pane label="领用到工作站">
+							<el-table v-loading="loading" :data="issueWSList">
+								<el-table-column label="批次号" align="center" prop="batchCode" />
+								<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
+								<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
+								<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 												
+								<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
+								<el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
+									<template slot-scope="scope">
+									  <el-button
+										size="mini"
+										type="text"
+										icon="el-icon-circle-check"
+										@click="handleAdd(scope.row)"						            
+									  >使用</el-button>
+									</template>
+								</el-table-column>
+							</el-table>							
+						</el-tab-pane>
+						<el-tab-pane label="领用到生产工单">
+							<el-table v-loading="loading" :data="issueWOList">
+								<el-table-column label="批次号" align="center" prop="batchCode" />
+								<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
+								<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
+								<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 												
+								<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
+								<el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
+									<template slot-scope="scope">
+									  <el-button
+										size="mini"			
+										icon="el-icon-circle-check"
+										@click="handleAdd(scope.row)"						            
+									  >使用</el-button>
+									</template>
+								</el-table-column>
+							</el-table>	
+						</el-tab-pane>
+					</el-tabs>
+					
 					<div slot="footer" class="dialog-footer">													
 						<el-button @click="handleCancle">关 闭</el-button>
 					</div>
@@ -186,6 +208,7 @@
 		data(){
 			return {
 				title: "流转单打印",
+				loading: false,
 				open: false,
 				issueOpen: false,
 				feedbackFlag: 'Y', //是否在打印流转单的同时报工
@@ -214,7 +237,8 @@
 						attention: '注塑工序第三步说明'
 					},
 				],
-				issueList: [],
+				issueWSList: [],
+				issueWOList: [],
 				itemData: []
 			}	
 		},
@@ -233,18 +257,38 @@
 			//获取当前工作台可用的领料单
 			getReserveIssue(){				
 				this.$u.api.getReserveIssue({
-					workstationId: this.vuex_workstation.workstationId,
-					workorderId: this.vuex_task.workorderId					
+					workstationId: this.vuex_workstation.workstationId								
 				}).then( res =>{
 						if(res.code == '200'){
-							this.issueList = res.data;							
+							this.issueWSList = res.data;							
+						}
+					}				
+				);
+			},
+			//获取当前生产任务可用的领料单
+			getReserveIssue2(){				
+				this.$u.api.getReserveIssue({					
+					workorderId: this.vuex_task.workorderId
+				}).then( res =>{
+						if(res.code == '200'){
+							this.issueWOList = res.data;							
 						}
 					}				
 				);
 			},
 			//添加领料单的某行到当前的投料清单
-			handleAdd(row){
-				
+			handleAdd(row){				
+				this.$u.api.addIssue({
+					taskId: this.vuex_task.taskId,
+					workstationId: this.vuex_workstation.workstationId,
+					sourceDocType: 'ISSUE',
+					sourceLineId: row.lineId
+				}).then( res =>{
+						if(res.code == '200'){
+							this.getIssueList();//刷新投料清单						
+						}
+					}				
+				);
 			},
 			handleCancle(){
 				this.issueOpen = false;

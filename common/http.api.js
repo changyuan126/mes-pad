@@ -41,7 +41,7 @@ const install = (Vue, vm) => {
 		 * 工艺工序相关API
 		 */
 		//生产投料
-		addTaskIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/add',params),
+		addIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/add',params),
 		//整个领料单投料
 		addholeIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/addIssue',params),
 		//获取当前工作站、当前生产任务对应的投料清单				

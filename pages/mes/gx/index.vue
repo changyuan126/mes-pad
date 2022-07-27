@@ -15,16 +15,19 @@
 				<el-row>
 					<el-col :span="24">
 						<scroll-view scroll-y="true" class="scroll-Y">
-							<el-card class="box-card" v-for="item in stepData">
-								<el-row>
-								  <el-col :span="12" class="item-img">
-									  <el-image :src="item.img" fit="contain"></el-image>
-								  </el-col>
-								  <el-col :span="12" class="item-text">
-									  {{item.attention}}
-								  </el-col>
-								</el-row>
-							</el-card>
+							<div v-for="(item,index) in sopList" :key="index" class="image-middle">
+								<el-card shadow="hover" :body-style="{pading: '10px'}">
+									<el-popover>
+										<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
+										<el-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></el-image>                        
+									</el-popover>
+									<div style="text-align:center;padding-top:12px">
+										<span>
+											{{sopList[index].sopDescription}}
+										</span>
+									</div>
+								</el-card>
+							</div>
 						</scroll-view>
 					</el-col>
 				</el-row>				
@@ -223,20 +226,8 @@
 					name: "注塑",
 					attention: "注塑工序说明"
 				},
-				stepData: [
-					{
-						img: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-						attention: '注塑工序第一步说明'
-					},
-					{
-						img: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-						attention: '注塑工序第二步说明'
-					},
-					{
-						img: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-						attention: '注塑工序第三步说明'
-					},
-				],
+				sopList: [],
+				imageList: [],
 				issueWSList: [],
 				issueWOList: [],
 				itemData: []
@@ -244,12 +235,30 @@
 		},
 		created(){
 			if(this.vuex_task != null){
+				this.getSopList();
 				this.getIssueList();
 			}else{
 				this.$u.toast('请在生产栏目切换生产任务！');
 			}
 		},
 		methods: {
+			//获取当前产品的SOP
+			getSopList(){
+				let that = this;
+				this.$u.api.getSopList({
+					itemId: this.vuex_task.itemId								
+				}).then( res =>{
+						if(res.code == '200'){
+							debugger;
+							that.imageList = [];
+							that.sopList = res.data;
+							that.sopList.forEach(row => {
+							    that.imageList.push(row.sopUrl);
+							});							
+						}
+					}				
+				);
+			},
 			handleIssueShow(){
 				this.getReserveIssue();
 				this.issueOpen = true;
@@ -360,4 +369,19 @@
 		width: 200px;
 		height: 200px;
 	}
+	
+	    .image-middle{
+	        margin-right: 15px;
+	        margin-bottom: 15px;
+	    }
+	
+	    .image{
+	        width:110px;
+	        height: 110px;
+	    }
+	
+	    .imagePreview {
+	        width: 600px;
+	        height: 500px;
+	    }
 </style>

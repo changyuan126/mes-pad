@@ -40,6 +40,8 @@ const install = (Vue, vm) => {
 		/**
 		 * 工艺工序相关API
 		 */
+		//获取当前产品的SOP
+		getSopList: (params ={}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getSopList',params),
 		//生产投料
 		addIssue: (params = {}) => vm.$u.post(config.adminPath + '/mobile/pro/taskissue/add',params),
 		//整个领料单投料
@@ -50,8 +52,6 @@ const install = (Vue, vm) => {
 		getTaskIssueList: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getlist',params),
 		//查询可用的领料单
 		getReserveIssue: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getReserveIssueList',params),
-		//获取当前产品/工序内容/作业指导书
-		getProcessContent: (params = {}) =>vm.$u.get(config.adminPath + '/mobile/pro/process/'),
 		//打印流转单
 		
 		

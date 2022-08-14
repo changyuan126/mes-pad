@@ -2,11 +2,7 @@
 import {RouterMount,createRouter} from 'uni-simple-router';
 
 const router = createRouter({
-	platform: 'h5',
-	h5: {
-		vueRouterDev:true,
-		useUniConfig: true
-	},
+	platform: process.env.VUE_APP_PLATFORM,
 	routes:[
 		{
 			path: "/",

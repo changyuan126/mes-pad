@@ -1,6 +1,4 @@
 import App from './App'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import 'static/icons'
 // #ifndef VUE3
 import Vue from 'vue'
@@ -9,7 +7,6 @@ App.mpType = 'app'
 
 import uView from 'uview-ui';
 Vue.use(uView);
-Vue.use(ElementUI)
 
 import {router,RouterMount} from '@/router/router.js'  //路径换成自己的
 Vue.use(router)

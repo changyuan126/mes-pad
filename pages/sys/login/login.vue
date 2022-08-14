@@ -1,19 +1,19 @@
 <template>
 	<view class="login">
-		<el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
+		<uni-forms ref="loginForm" :modelValue="loginForm" :rules="loginRules" class="login-form">
 		  <h3 class="title">苦糖果MES</h3>
-		  <el-form-item prop="username">
-		    <el-input
+		  <uni-forms-item prop="username">
+		    <input
 		      v-model="loginForm.username"
 		      type="text"
 		      auto-complete="off"
 		      placeholder="账号"
 		    >
 		      <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-		    </el-input>
-		  </el-form-item>
-		  <el-form-item prop="password">
-		    <el-input
+		    </input>
+		  </uni-forms-item>
+		  <uni-forms-item prop="password">
+		    <input
 		      v-model="loginForm.password"
 		      type="password"
 		      auto-complete="off"
@@ -21,10 +21,10 @@
 		      @keyup.enter.native="submit"
 		    >
 		      <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-		    </el-input>
-		  </el-form-item>
-		  <el-form-item style="width:100%;">
-		    <el-button
+		    </input>
+		  </uni-forms-item>
+		  <uni-forms-item style="width:100%;">
+		    <button
 		      :loading="loading"
 		      size="medium"
 		      type="primary"
@@ -33,9 +33,9 @@
 		    >
 		      <span v-if="!loading">登 录</span>
 		      <span v-else>登 录 中...</span>
-		    </el-button>
-		  </el-form-item>
-		</el-form>
+		    </button>
+		  </uni-forms-item>
+		</uni-forms>
 		
 	</view>
 </template>

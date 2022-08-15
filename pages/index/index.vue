@@ -1,51 +1,35 @@
 <template>
-	<view>
-		<el-container class="elcontainer">
-			
-			<el-header class="home-head">
-				<el-row class="divHead">
-				  <el-col :span="8" class="divItem"><div class="title">苦糖果MES-触控屏端</div></el-col>
-				  <el-col :span="8" class="divItem"><div class="workstation">{{this.vuex_workstation==null?'':this.vuex_workstation.workstationName}}</div></el-col>
-				  <el-col :span="8" class="divItem"><div class="user">
-					<el-dropdown @command="handleCommand" style="float: right;">
-						<span class="el-dropdown-link">
-							{{'张三'}}<i><img :src="userInfo.avatar"></img></i>
-						</span>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="pwd">更改密码</el-dropdown-item>
-							<el-dropdown-item command="workstation">切换工作站</el-dropdown-item>
-							<el-dropdown-item command="exit">退出登录</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-				  </div></el-col>
-				</el-row>
+	<view class="common-container">
+		<view class="common-head">
+			<view class="header">
+					<view class="title">
+						苦糖果MES-触控屏端
+					</view>
+					<view class="workstation">
+						{{this.vuex_workstation==null?'请选择工作站':this.vuex_workstation.workstationName}}
+					</view>
+					<view class="user" @tap="handleUserTaped">
+						<view class="user-icon">
+							<img :src="userInfo.avatar"></img>
+						</view>
+						<view class="user-text">
+							{{this.vuex_user.nickName}}
+						</view>						
+					</view>
+				<uni-popup :visible.sync="open" type="dialog">
+					<uni-popup-dialog title="请指定工作站"></uni-popup-dialog>
+				</uni-popup>
 				
-				</div>
-				<el-dialog title="请指定工作站" :visible.sync="open" width="800px" append-to-body>
-					<el-tabs type="border-card" v-model="activeProcess" @tab-click="getWorkstationList">
-						<el-tab-pane v-for="item in processList" :key="item.processId" :label="item.processName"
-							:name="item.processCode">
-							<el-card class="box-card" style="width: 300px" v-for="card in workstationList"
-								:key="card.workstationId" :name="card.workstationCode">
-								<div slot="header">
-									<span>工作站{{card.workstationCode}}</span>
-									<el-button type="primary" style="float:right;padding: 1px 0;"
-										@click="setWorkstation(card)">选择</el-button>
-								</div>
-								{{'工作站名称：'+card.workstationName}}
-							</el-card>
-						</el-tab-pane>
-					</el-tabs>
-					<div slot="footer" class="dialog-footer">
-						<el-button @click="cancel">关 闭</el-button>
-					</div>
-				</el-dialog>
-			</el-header>
-			<el-main class="mainContent">
-				<TabHeader></TabHeader>
-				<router-view></router-view>
-			</el-main>
-		</el-container>
+				<uni-popup :visible.sync="logoutMenu" type="dialog">
+					<uni-popup-dialog title="请选择操作"></uni-popup-dialog>
+				</uni-popup>
+			</view>
+		</view>
+		<view class="common-main">
+			<TabHeader></TabHeader>
+			<router-view></router-view>
+		</view>
+		
 	</view>
 </template>
 
@@ -56,10 +40,10 @@
 		components: {
 			TabHeader
 		},
-		data() {
+		data(){
 			return {
-				loading: false,
 				open: false,
+				logoutMenu: false,
 				activeProcess: null,
 				userInfo: {
 					nickName: '张三',
@@ -74,6 +58,13 @@
 			this.getProcessList();
 		},
 		methods: {
+			//用户部分点击
+			handleUserTaped(){
+				console.log("TAPED")
+				this.logoutMenu = true;
+				
+			},
+			
 			//检查工作站设置情况
 			checkWorkstation() {
 				if (this.vuex_workstation == null) {
@@ -94,7 +85,7 @@
 					} else {
 						this.$u.toast("获取工序清单异常" + res.msg);
 					}
-
+		
 				});
 			},
 			//获取工作站清单
@@ -122,7 +113,7 @@
 						if (res.msg) {
 							this.$u.toast(res.msg);
 						}
-
+		
 						if (res.code == '200') {
 							setTimeout(() => {
 								uni.reLaunch({
@@ -132,7 +123,7 @@
 						}
 					})
 				} else if (command == 'workstation') {
-
+		
 					this.open = true;
 				}
 			}
@@ -141,63 +132,61 @@
 </script>
 
 <style>
-	.elcontainer {
-		background: rgb(3 26 60);
-	}
-
-	.home-head {
+	.common-head {
+		height: 40px;
 		background-color: rgb(3, 26, 60);
 		display: flex;
-		align-items: center;
-		
+		align-items: center;		
 		padding: 0 15px;
 		box-sizing: border-box;
 	}
 	
-	.divHead{
+	.header {
 		width: 100%;
 		height: 100%;
 		color: aliceblue;
 		font-size: 25px;
 		font-family: 华文楷体;
+		display: flex;
 	}
 	
-	.divHead .divItem{
-		display: inline-flex;
+	.header .divItem {
 		height: 100%;
 		align-items: center;
 	}
-	.divHead .title{
-		float: left;
-		width: 100%;
+	
+	.header .title{
+		width: 30%;
 	}
-	.divHead .workstation{
+	
+	.header .workstation{
 		text-align: center;
-		width: 100%;
-	}
-	.divHead .user{
-		
-		width: 100%;
+		flex-grow: 1;
 	}
 	
+	.header .user{		
+		width: 30%;
+	}
 	
-
-	.el-dropdown-link {
-		font-size: 20px;
-		color: aliceblue;
-		margin-bottom: 15px;
+	.header .user .user-icon{
+		float: right;
 	}
 
-	.el-dropdown-link img {
+	img {
 		width: 40px;
 		height: 40px;
 		border-radius: 20px;
 		margin-left: 10px;
 	}
 
-	.mainContent {
+	.header .user .user-text{
+		float: right;
+	}
+	
+	.common-main {
 		padding: 10px 10px 0px 10px;
-		margin: 7px;
+		margin: 0;
 		background-image: linear-gradient(to top right, rgb(19 26 56), rgb(33 64 128));
 	}
+	
 </style>

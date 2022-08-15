@@ -39,13 +39,10 @@ Vue.use(httpInterceptor, app);
 import httpApi from '@/common/http.api.js';
 Vue.use(httpApi, app);
 
-// #ifdef H5
-RouterMount(app,router,'#app');
-// #endif
 
-// #ifndef H5
+RouterMount(app,router,'#app');
+
 app.$mount()
-// #endif
 
 // #endif
 

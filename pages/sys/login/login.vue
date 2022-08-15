@@ -18,7 +18,7 @@
 		      type="password"
 		      auto-complete="off"
 		      placeholder="密码"
-		      @keyup.enter.native="submit"
+		      @keyup.enter="submit"
 		    >
 		      <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 		    </input>
@@ -29,7 +29,7 @@
 		      size="medium"
 		      type="primary"
 		      style="width:100%;"
-		      @click.native.prevent="submit()"
+		      @click="submit()"
 		    >
 		      <span v-if="!loading">登 录</span>
 		      <span v-else>登 录 中...</span>
@@ -53,18 +53,23 @@
 							uuid: ""
 				},
 				loginRules: {
-							username: [
-							  { required: true, trigger: "blur", message: "请输入您的账号" }
-							],
-							password: [
-							  { required: true, trigger: "blur", message: "请输入您的密码" }
-							]
+							username: {
+								rules: [
+								  { required: true, trigger: "blur", errorMessage: "请输入您的账号" }
+								],
+							},
+							
+							password: {
+								rules: [
+									  { required: true, trigger: "blur", errorMessage: "请输入您的密码" }
+									]
+							}
 				},
 			}
 		},
 		methods: {
 			submit(){
-				this.$refs.loginForm.validate(valid => {
+				this.$refs.loginForm.validate().then(valid => {
 					if (valid) {
 					  this.loading = true;
 					  this.$u.api.login({

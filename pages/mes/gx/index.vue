@@ -2,49 +2,44 @@
 	<view class="commonBody">
 		<el-row :gutter="20">
 			<el-col :span="10">
-				<el-row >
-					<el-col :span="24">
-						<el-card shadow="never" class="attention">
-							 <div slot="header" class="clearfix">
-							    <span>{{"当前工序："+process.name}}</span>							    
-							  </div>
+				<div class="leftSide">
+					<el-card  class="attention">
+						<div slot="header" class="card_head">
+						    <span>{{"当前工序："+process.name}}</span>							    
+						</div>
+						<div>
 							{{"工艺要求："+process.attention}}
-						</el-card>						
-					</el-col>
-				</el-row>
-				<el-row>
-					<el-col :span="24">
+						</div>						
 						<scroll-view scroll-y="true" class="scroll-Y">
-							<div v-for="(item,index) in sopList" :key="index" class="image-middle">
-								<el-card shadow="hover" :body-style="{pading: '10px'}">
-									<el-popover>
-										<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
-										<el-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></el-image>                        
-									</el-popover>
-									<div style="text-align:center;padding-top:12px">
-										<span>
-											{{sopList[index].sopDescription}}
-										</span>
+							<div v-for="(item,index) in sopList" :key="index" class="sopDiv">
+								<el-card shadow="hover" class="sop-card">
+									<div style="float:left;margin: 0 0;">
+										<el-popover>
+											<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
+											<el-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></el-image>                        
+										</el-popover>
+									</div>
+									
+									<div style="float: right;text-align:center;">
+										<el-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">
+											
+										</el-input>								
 									</div>
 								</el-card>
 							</div>
 						</scroll-view>
-					</el-col>
-				</el-row>				
+					</el-card>					
+				</div>																		
 			</el-col>
 			<el-col :span="14">
 				<el-row>
-					<el-col :span="4">
-						{{"当前生产批次："}}
-					</el-col>
-					<el-col :span="8">						
-						<el-input v-model="batchCode"></el-input>						
-					</el-col>
-					<el-col :span="6">
-						<el-button type="primary" icon="el-icon-video-play">来料扫码</el-button>
-					</el-col>
-					<el-col :span="6">
-						<el-button type="primary" @click="handleIssueShow" icon="el-icon-video-play">选择领料单</el-button>
+					<el-col :span="24">
+						<div class="batch_head">
+							<span>{{"当前生产批次："}}</span>
+							<el-input style="width: 180px;" v-model="batchCode"></el-input>						
+							<el-button type="primary" style="float: right; margin:auto 5px" icon="el-icon-video-play">来料扫码</el-button>
+							<el-button type="primary" style="float: right; " @click="handleIssueShow" icon="el-icon-video-play">选择领料单</el-button>
+						</div>						
 					</el-col>
 				</el-row>
 				<el-dialog title="选择生产领料" :visible.sync="issueOpen" width="800px" append-to-body>
@@ -92,55 +87,35 @@
 						<el-button @click="handleCancle">关 闭</el-button>
 					</div>
 				</el-dialog>
-				<el-divider></el-divider>
 				<el-row>
 					<el-col :span="24">
 						<scroll-view scroll-y="true" class="scroll-item">
-							<el-card class="box-card" v-for="item in itemData">
-								<el-form :inline="true">
-									<el-row>
-									  <el-col :span="12">
-										  <el-form-item label="物料编码" prop="quantity">
-										  	<el-input disabled v-model="item.itemCode"></el-input>
-										  </el-form-item>
-									  </el-col>
-									  <el-col :span="12">
-										  <el-form-item label="物料名称">
-										  	<el-input disabled v-model="item.itemName"></el-input>
-										  </el-form-item>
-									  </el-col>								  
-									</el-row>
+							<div class="info_card" v-for="item in itemData">
+								<div class="issue_info">
 									<el-row>
 										<el-col :span="12">
-											<el-form-item label="规格型号">
-												<el-input disabled v-model="item.spc"></el-input>
-											</el-form-item>
+											<span class="info_label">物料编码：</span>{{item.itemCode}}
 										</el-col>
 										<el-col :span="12">
-											<el-form-item label="单 位">
-												<el-input disabled v-model="item.unitOfMeasure"></el-input>
-											</el-form-item>
+											<span class="info_label">物料名称：</span>{{item.itemName}}
 										</el-col>
 									</el-row>
 									<el-row>
-										<el-col :span="12">
-											<el-form-item label="领料数量">
-												<el-input disabled v-model="item.quantityIssued"></el-input>
-											</el-form-item>
+										<el-col :span="10">
+											<span class="info_label">规格型号：</span>{{item.spc}}
 										</el-col>
-										<el-col :span="12">
-											<el-form-item label="已使用数量">
-												<el-input disabled v-model="item.quantityUsed"></el-input>
-											</el-form-item>
+										<el-col :span="6">
+											<span class="info_label">单位：</span>{{item.unitOfMeasure}}
 										</el-col>
-									</el-row>
-									<el-row>
-										<el-col :span="24">
-											<el-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</el-button>
+										<el-col :span="8">
+											<span class="info_label">投料数量：</span>{{item.quantityIssued}}	
 										</el-col>
 									</el-row>
-								</el-form>								
-							</el-card>
+								</div>
+								<div class="issue_bt">
+									<el-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</el-button>
+								</div>	
+							</div>
 						</scroll-view>
 					</el-col>
 				</el-row>
@@ -249,7 +224,6 @@
 					itemId: this.vuex_task.itemId								
 				}).then( res =>{
 						if(res.code == '200'){
-							debugger;
 							that.imageList = [];
 							that.sopList = res.data;
 							that.sopList.forEach(row => {
@@ -353,6 +327,10 @@
 		
 	}
 	
+	.sop-card {
+		width: 100%;
+	}
+	
 	.scroll-Y{
 		height: 450px;
 	}
@@ -361,8 +339,19 @@
 		height: 400px;
 	}
 	
+	.card_head{
+		height: 15px;
+	}
+	
+	.el-card__header{
+		background-color: palegoldenrod;
+	}
+	
 	.attention{
-		height: 150px;
+		height: 100%;
+		margin-left: 5px;
+		margin-top: 5px;
+		margin-bottom: 5px;
 	}
 	
 	.item-img{
@@ -370,9 +359,8 @@
 		height: 200px;
 	}
 	
-	    .image-middle{
-	        margin-right: 15px;
-	        margin-bottom: 15px;
+	    .sopDiv{
+			width: 100%;
 	    }
 	
 	    .image{
@@ -384,4 +372,29 @@
 	        width: 600px;
 	        height: 500px;
 	    }
+		
+		.batch_head {
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+		
+		.info_card {
+			height: 50px;
+			margin: 5px;
+			display: flex;
+			box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+		}
+		
+		.issue_info {			
+			width: 435px;
+		}
+		
+		.info_label {
+			font-weight: bold;
+		}
+		
+		.issue_bt {			
+			width: 80px;
+		}
+		
 </style>

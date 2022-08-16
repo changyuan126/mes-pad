@@ -15,14 +15,19 @@
 						<view class="user-text">
 							{{this.vuex_user.nickName}}
 						</view>						
-					</view>
-				<uni-popup :visible.sync="open" type="dialog">
-					<uni-popup-dialog title="请指定工作站"></uni-popup-dialog>
-				</uni-popup>
+					</view>				
+				<u-modal v-model="showWorkstationFlag" title="请选择工作站" content="操作内容">
+					
+				</u-modal>
 				
-				<uni-popup :visible.sync="logoutMenu" type="dialog">
-					<uni-popup-dialog title="请选择操作"></uni-popup-dialog>
-				</uni-popup>
+				<u-modal v-model="showLogoutMenu" :showConfirmButton=false :showCancelButton="true" width="400px" title="请选择操作" >
+					<view class="logoutmenu">
+						<u-button shape="circle" class="menu_button" type="primary">更改密码</u-button>
+						<u-button shape="circle" class="menu_button" type="warning">切换工作站</u-button>
+						<u-button shape="circle" class="menu_button" @click="handleCommand('exit')" type="error">退出登录</u-button>
+					</view>
+				</u-modal>
+				
 			</view>
 		</view>
 		<view class="common-main">
@@ -42,8 +47,8 @@
 		},
 		data(){
 			return {
-				open: false,
-				logoutMenu: false,
+				showWorkstationFlag: false,
+				showLogoutMenu: false,
 				activeProcess: null,
 				userInfo: {
 					nickName: '张三',
@@ -61,14 +66,14 @@
 			//用户部分点击
 			handleUserTaped(){
 				console.log("TAPED")
-				this.logoutMenu = true;
-				
+				// this.$refs.menu_dialog.open();
+				this.showLogoutMenu = true;
 			},
 			
 			//检查工作站设置情况
 			checkWorkstation() {
 				if (this.vuex_workstation == null) {
-					this.open = true;
+					this.showWorkstationFlag = true;
 					this.$u.toast("请设置当前触控屏的工作站！");
 				}
 			},
@@ -170,7 +175,7 @@
 	
 	.header .user .user-icon{
 		float: right;
-	}
+	}	
 
 	img {
 		width: 40px;
@@ -181,6 +186,17 @@
 
 	.header .user .user-text{
 		float: right;
+	}
+	
+	.logoutmenu {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+	
+	.menu_button {
+		width: 100px;		
+		margin: 10px;
 	}
 	
 	.common-main {

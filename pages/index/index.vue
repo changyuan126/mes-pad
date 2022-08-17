@@ -16,14 +16,23 @@
 							{{this.vuex_user.nickName}}
 						</view>						
 					</view>				
-				<u-modal v-model="showWorkstationFlag" title="请选择工作站" content="操作内容">
-					
+				<u-modal width="600px" v-model="showWorkstationFlag" title="请选择工作站" content="操作内容" >
+					<u-tabs :list="processList" :is-scroll="false" :current="currentFlag" name="processName" @change="getWorkstationList"> 						
+					</u-tabs>
+					<view class="station_list">
+						<u-card class="station_card" :show-foot="false" :title="'工作站'+card.workstationCode" v-for="card in workstationList">
+							<view class="" slot="body">
+								{{'工作站名称：'+card.workstationName}}
+								<u-button type="primary" @click="setWorkstation(card)">选择</u-button>
+							</view>
+						</u-card>
+					</view>					
 				</u-modal>
 				
 				<u-modal v-model="showLogoutMenu" :showConfirmButton=false :showCancelButton="true" width="400px" title="请选择操作" >
 					<view class="logoutmenu">
-						<u-button shape="circle" class="menu_button" type="primary">更改密码</u-button>
-						<u-button shape="circle" class="menu_button" type="warning">切换工作站</u-button>
+						<u-button shape="circle" class="menu_button" @click="" type="primary">更改密码</u-button>
+						<u-button shape="circle" class="menu_button" @click="handleCommand('workstation')" type="warning">切换工作站</u-button>
 						<u-button shape="circle" class="menu_button" @click="handleCommand('exit')" type="error">退出登录</u-button>
 					</view>
 				</u-modal>
@@ -56,6 +65,7 @@
 				},
 				processList: [], //工序清单
 				workstationList: [], //工作站清单
+				currentFlag: 0
 			}
 		},
 		created() {
@@ -77,16 +87,13 @@
 					this.$u.toast("请设置当前触控屏的工作站！");
 				}
 			},
-			cancle() {
-				this.open = false;
-			},
 			//获取工序清单
 			getProcessList() {
 				this.$u.api.getProcessList({}).then(res => {
 					if (res.code == '200') {
 						this.processList = res.data;
 						this.activeProcess = res.data[0].processCode;
-						this.getWorkstationList();
+						this.getWorkstationList(0);
 					} else {
 						this.$u.toast("获取工序清单异常" + res.msg);
 					}
@@ -94,7 +101,8 @@
 				});
 			},
 			//获取工作站清单
-			getWorkstationList() {
+			getWorkstationList(index) {				
+				this.currentFlag = index;
 				this.$u.api.getWorkstationList({
 					processCode: this.activeProcess
 				}).then(res => {
@@ -108,7 +116,7 @@
 			//设置当前触控屏的工作站
 			setWorkstation(station) {
 				this.$u.vuex('vuex_workstation', station);
-				this.open = false;
+				this.showWorkstationFlag = false;
 			},
 			handleCommand(command) {
 				if (command == 'exit') {
@@ -128,8 +136,8 @@
 						}
 					})
 				} else if (command == 'workstation') {
-		
-					this.open = true;
+					this.showLogoutMenu = false;
+					this.showWorkstationFlag = true;
 				}
 			}
 		}
@@ -197,6 +205,20 @@
 	.menu_button {
 		width: 100px;		
 		margin: 10px;
+	}
+	
+	.station_modal {
+		width: 600px;
+	}
+	
+	.station_list {
+		display: flex;
+		width: 600px;
+	}
+	
+	.station_card {
+		width: 300px;
+		height: 150px;
 	}
 	
 	.common-main {

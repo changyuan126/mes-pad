@@ -1,21 +1,21 @@
 <template>
     <tab-bar class="bar">
-        <tab-bar-item path="/pages/mes/pro/index" activeColor="black" class="tab-bar-item" style="border-top-left-radius: 5px; border-right: solid #A2A3A5">
+        <tab-bar-item path="PRO" activeColor="black" class="tab-bar-item" style="border-top-left-radius: 5px; border-right: solid #A2A3A5">
             <template v-slot:item-text><div class="title-style">生产</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/pro.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/pro.png')" alt=""></template>
         </tab-bar-item>
-        <tab-bar-item path="/pages/mes/gx/index" activeColor="black" style="border-right: solid #A2A3A5">
+        <tab-bar-item path="GX" activeColor="black" style="border-right: solid #A2A3A5">
             <template v-slot:item-text><div class="title-style">工序</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/gx.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/gx.png')" alt=""></template>
         </tab-bar-item>
-        <tab-bar-item path="/pages/mes/qc/index" activeColor="black" style="border-right: solid #A2A3A5">
+        <tab-bar-item path="QC" activeColor="black" style="border-right: solid #A2A3A5">
             <template v-slot:item-text><div class="title-style">质量</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/qc.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/qc.png')" alt=""></template>
         </tab-bar-item>
-        <tab-bar-item path="/pages/mes/dev/index" activeColor="black">
+        <tab-bar-item path="DV" activeColor="black">
             <template v-slot:item-text><div class="title-style">设备</div></template>
             <template v-slot:item-icon><img class="hengxian" :src="require('@/static/icons/png/dev.png')" alt=""></template>
             <template v-slot:item-icon-active><img class="hengxian" :src="require('@/static/icons/png/dev.png')" alt=""></template>

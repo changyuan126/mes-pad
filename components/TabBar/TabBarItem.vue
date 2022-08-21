@@ -33,7 +33,9 @@
         },
         methods: {
             itemClick() {
-                this.$router.push(this.path)
+                //this.$router.push(this.path)
+				console.log("switching Tab :"+this.path);
+				uni.$emit('switchTab',this.path);
             }
         }
     }

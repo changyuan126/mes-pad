@@ -1,10 +1,12 @@
 <template>
-	<view class="commonBody">
+	<view class="commonBody" :style="{ 'height': (this.screenHeight -140) + 'px' }">
 		<view class="content">
 			<view class="content_left">
-				<view class="">
-					<u-button type="primary"  @click="getTaskList()" >刷新</u-button>
-				</view>
+				<u-row justify="center" style="margin-top: 10px;">
+					<u-col span="6">
+						<u-button type="primary"  @click="getTaskList()" >刷新</u-button>
+					</u-col>
+				</u-row>									
 				<scroll-view scroll-y="true" class="scroll-Y">
 					<u-card class="task_card" box-shadow="0 4px 8px rgba(0, 0, 0, 0.2)" :show-foot="false"  :key="item.taskCode" v-for="item in tableData">
 						<view class="" slot="head">
@@ -14,7 +16,7 @@
 								</u-col>
 								<u-col span="4">
 									<u-tag type="success" v-if="item.status=='START'" text="生产中"/>
-									<u-tag type="warning" v-else-if="item.staus=='PAUSE'" text="暂停"/>
+									<u-tag type="warning" v-else-if="item.status=='PAUSE'" text="暂停"/>
 									<u-tag type="primary" v-else text="未开始"/>		
 								</u-col>
 							</u-row>
@@ -55,18 +57,13 @@
 					<u-col span="4">
 						<u-button type="primary" v-if="form.status =='NORMAL'" @click="changeStatus('START')" >开始</u-button>
 						<u-button type="primary" v-else-if="form.status =='START'" @click="changeStatus('PAUSE')" >暂停</u-button>
-					</u-col>
-					<u-col span="4">
 						<u-button type="primary" v-if="form.status =='PAUSE'" @click="changeStatus('START')" >继续</u-button>
+					</u-col>
+					<u-col span="4">						
 						<u-button type="primary" v-if="form.taskId !=null " @click="changeStatus('FINISHED')" >完成</u-button>
 					</u-col>
 					<u-col span="4">
 						<u-button type="primary" @click="doFeedback" v-if="form.taskId !=null && form.status !='NORMAL'" >生产报工</u-button>
-					</u-col>
-				</u-row>
-				<u-row gutter="16">
-					<u-col span="12">
-						<u-line-progress :showText="true" height="26" :percentage="form.progress" ></u-line-progress>
 					</u-col>
 				</u-row>
 				<u-modal :title="title" v-model="open" width="800px">
@@ -91,33 +88,71 @@
 				</u-modal>
 				
 				<u-form :inline="true" label-width="80px" size="small" :model="form" label-position="left">
-					<u-form-item label="产品名称" prop="itemName">
-						<u-input  v-model="form.itemName" />
-					</u-form-item>
-					<u-form-item label="产品编码" prop="itemCode">
-						<u-input  v-model="form.itemCode" />
-					</u-form-item>
-					<u-form-item label="单位" prop="unitOfMeasure">
-						<u-input  v-model="form.unitOfMeasure" />
-					</u-form-item>
-					<u-form-item label="任务编号" prop="workTaskCode">
-						<u-input  v-model="form.taskCode" />
-					</u-form-item>
-					<u-form-item label="任务数量" prop="quantity">
-						<u-input  v-model="form.quantity" />
-					</u-form-item>
-					<u-form-item label="生产数量" prop="quantityProduced">
-						<u-input  v-model="form.quantityProduced" />
-					</u-form-item>
-					<u-form-item label="良品数量" prop="quantityQuanlify">
-						<u-input  v-model="form.quantityQuanlify" />
-					</u-form-item>
-					<u-form-item label="不良数量" prop="quantityUnquanlify">
-						<u-input  v-model="form.quantityUnquanlify" />
-					</u-form-item>							
+					<u-row gutter="16">
+						<u-col span="12">
+							<u-form-item label="生产进度">
+								<u-line-progress :showText="true" :height="60" :percentage="form.progress" ></u-line-progress>
+							</u-form-item>
+						</u-col>
+					</u-row>
+					<u-row gutter="16">
+						<u-col span="6">
+							<u-form-item label="产品编码" prop="itemCode">
+								<u-input  v-model="form.itemCode" />
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="产品名称" prop="itemName">
+								<u-input  v-model="form.itemName" />
+							</u-form-item>
+						</u-col>
+					</u-row>
+					<u-row gutter="16">
+						<u-col span="6">
+							<u-form-item label="单位" prop="unitOfMeasure">
+								<u-input  v-model="form.unitOfMeasure" />
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="任务编号" prop="workTaskCode">
+								<u-input  v-model="form.taskCode" />
+							</u-form-item>
+						</u-col>
+					</u-row>
+					<u-row gutter="16">
+						<u-col span="6">
+							<u-form-item label="任务数量" prop="quantity">
+								<u-input  v-model="form.quantity" />
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="生产数量" prop="quantityProduced">
+								<u-input  v-model="form.quantityProduced" />
+							</u-form-item>
+						</u-col>
+					</u-row>
+					<u-row gutter="16">
+						<u-col span="6">
+							<u-form-item label="良品数量" prop="quantityQuanlify">
+								<u-input  v-model="form.quantityQuanlify" />
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="不良数量" prop="quantityUnquanlify">
+								<u-input  v-model="form.quantityUnquanlify" />
+							</u-form-item>	
+						</u-col>
+					</u-row>
+					<u-row gutter="16">
+						<u-col span="6">
+							<u-button type="primary" >SOP</u-button>
+						</u-col>
+						<u-col span="6">
+							<u-button type="primary" >SIP</u-button>
+						</u-col>
+					</u-row>
 				</u-form>
-				<u-button type="primary" >SOP</u-button>
-				<u-button type="primary" >SIP</u-button>				
+						
 			</view>
 		</view>
 	</view>
@@ -128,6 +163,7 @@
 		name: "pro_content",
 		data(){
 			return {
+				screenHeight: 768,			
 				title: '生产报工',
 				open: false,
 				form: {},
@@ -141,11 +177,22 @@
 			}
 		},
 		created(){
+			//获取屏幕高度
+			uni.getSystemInfo({
+				success(res) {
+					console.log('windowHeight:'+res.windowHeight);
+					this.screenHeight = res.windowHeight;
+				}
+			})
+			
 			//监听工作站切换事件
-			uni.$on('switchWorkstation',(station)=>{	
-				console.log('switchWorkstation detected')
+			uni.$on('switchWorkstation',(station)=>{					
 				this.reset();
 				this.getTaskList();
+			})
+			
+			uni.$on('taskStatusChanged',()=>{
+				this.getTaskList(); //刷新任务状态
 			})
 			
 			if(this.vuex_workstation !=null){
@@ -157,6 +204,7 @@
 		},
 		destroyed() {
 			uni.$off('switchWorkstation');
+			uni.$off('taskStatusChanged');
 		},
 		methods:{
 			getTaskList(){				
@@ -178,6 +226,7 @@
 							this.form = res.data;
 							this.$u.vuex('vuex_task', res.data);
 							this.form.progress = Math.round(res.data.quantityProduced/res.data.quantity,0);
+							
 						}
 					}				
 				);
@@ -190,6 +239,7 @@
 				}).then( res =>{
 						if(res.code == '200'){							
 							this.$u.toast('变更成功');
+							uni.$emit('taskStatusChanged'); //任务状态变更
 						}
 					}				
 				);
@@ -239,6 +289,8 @@
 <style>
 	.commonBody{
 		background-color: #FEFEFF;		
+		margin: 0 0;
+		padding: 0 0;
 	}
 	
 	.content {
@@ -247,7 +299,7 @@
 	}
 	
 	.content_left {
-		width: 40%;
+		width: 40%;		
 	}
 	
 	.task_card {

@@ -21,8 +21,7 @@
 									</div>
 									
 									<div style="float: right;text-align:center;">
-										<el-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">
-											
+										<el-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">											
 										</el-input>								
 									</div>
 								</el-card>

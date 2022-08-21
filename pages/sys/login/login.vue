@@ -1,8 +1,8 @@
 <template>
 	<view class="login">
-		<uni-forms ref="loginForm" :modelValue="loginForm" :rules="loginRules" class="login-form">
+		<u-form ref="loginForm" :modelValue="loginForm" :rules="loginRules" class="login-form">
 		  <h3 class="title">苦糖果MES</h3>
-		  <uni-forms-item prop="username">
+		  <u-form-item prop="username">
 		    <input
 		      v-model="loginForm.username"
 		      type="text"
@@ -11,8 +11,8 @@
 		    >
 		      <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
 		    </input>
-		  </uni-forms-item>
-		  <uni-forms-item prop="password">
+		  </u-form-item>
+		  <u-form-item prop="password">
 		    <input
 		      v-model="loginForm.password"
 		      type="password"
@@ -22,8 +22,8 @@
 		    >
 		      <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 		    </input>
-		  </uni-forms-item>
-		  <uni-forms-item style="width:100%;">
+		  </u-form-item>
+		  <u-form-item style="width:100%;">
 		    <button
 		      :loading="loading"
 		      size="medium"
@@ -34,8 +34,8 @@
 		      <span v-if="!loading">登 录</span>
 		      <span v-else>登 录 中...</span>
 		    </button>
-		  </uni-forms-item>
-		</uni-forms>		
+		  </u-form-item>
+		</u-form>		
 	</view>
 </template>
 

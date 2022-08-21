@@ -130,6 +130,7 @@
 			setWorkstation(station) {
 				this.$u.vuex('vuex_workstation', station);
 				this.showWorkstationFlag = false;
+				uni.$emit('switchWorkstation',station);
 			},
 			handleCommand(command) {
 				if (command == 'exit') {

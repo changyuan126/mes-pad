@@ -21,7 +21,7 @@
 				<u-icon class="u-icon" :name="delIcon" size="20" :color="delColor"></u-icon>
 			</view>
 			<u-line-progress
-				v-if="showProgress && item.progress > 0 && !item.error"
+				v-if="showProgress && item.progress > 0 && item.progress != 100 && !item.error"
 				:show-percent="false"
 				height="16"
 				class="u-progress"
@@ -394,18 +394,12 @@ export default {
 				let beforeResponse = this.beforeUpload.bind(this.$u.$parent.call(this))(index, this.lists);
 				// 判断是否返回了promise
 				if (!!beforeResponse && typeof beforeResponse.then === 'function') {
-					let error = false;
 					await beforeResponse.then(res => {
 						// promise返回成功，不进行动作，继续上传
 					}).catch(err => {
 						// 进入catch回调的话，继续下一张
-						// return this.uploadFile(index + 1);
-						// 在 cache 中 return 只是返回本方法，并不是返回 uploadFile 方法，需要在外层进行返回 aidex
-						error = true;
-					})
-					if (error){
 						return this.uploadFile(index + 1);
-					}
+					})
 				} else if(beforeResponse === false) {
 					// 如果返回false，继续下一张图片的上传
 					return this.uploadFile(index + 1);
@@ -427,6 +421,9 @@ export default {
 				name: this.name,
 				formData: this.formData,
 				header: this.header,
+				// #ifdef MP-ALIPAY
+				fileType:'image',
+				// #endif
 				success: res => {
 					// 判断是否json字符串，将其转为json格式
 					let data = this.toJson && this.$u.test.jsonString(res.data) ? JSON.parse(res.data) : res.data;
@@ -504,7 +501,7 @@ export default {
 		// 执行移除图片的动作，上方代码只是判断是否可以移除
 		handlerDeleteItem(index) {
 			// 如果文件正在上传中，终止上传任务，进度在0 < progress < 100则意味着正在上传
-			if (this.lists[index].process < 100 && this.lists[index].process > 0) {
+			if (this.lists[index].progress < 100 && this.lists[index].progress > 0) {
 				typeof this.lists[index].uploadTask != 'undefined' && this.lists[index].uploadTask.abort();
 			}
 			this.lists.splice(index, 1);

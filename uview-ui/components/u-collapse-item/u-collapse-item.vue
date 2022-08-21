@@ -110,7 +110,8 @@
 				this.parent = this.$u.$parent.call(this, 'u-collapse');
 				if(this.parent) {
 					this.nameSync = this.name ? this.name : this.parent.childrens.length;
-					this.parent.childrens.push(this);
+					// 不存在时才添加本实例
+					!this.parent.childrens.includes(this) && this.parent.childrens.push(this);
 					this.headStyle = this.parent.headStyle;
 					this.bodyStyle = this.parent.bodyStyle;
 					this.arrowColor = this.parent.arrowColor;
@@ -170,7 +171,7 @@
 		color: $u-main-color;
 		font-size: 30rpx;
 		line-height: 1;
-		padding: 8rpx 0 24rpx;
+		padding: 24rpx 0;
 		text-align: left;
 	}
 

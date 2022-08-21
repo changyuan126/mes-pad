@@ -1,5 +1,7 @@
 <template>
-	<view class="u-swiper-wrap">
+	<view class="u-swiper-wrap" :style="{
+		borderRadius: `${borderRadius}rpx`
+	}">
 		<swiper :current="elCurrent" @change="change" @animationfinish="animationfinish" :interval="interval" :circular="circular" :duration="duration" :autoplay="autoplay"
 		 :previous-margin="effect3d ? effect3dPreviousMargin + 'rpx' : '0'" :next-margin="effect3d ? effect3dPreviousMargin + 'rpx' : '0'"
 		 :style="{
@@ -317,7 +319,6 @@
 		overflow: hidden;
 		box-sizing: content-box;
 		position: relative;
-		border-radius: 12rpx!important;
 	}
 
 	.u-swiper-title {

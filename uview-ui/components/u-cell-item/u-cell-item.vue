@@ -283,7 +283,7 @@ export default {
 	vertical-align: middle;
 	/* #endif */
 	color: $u-tips-color;
-	font-size: 30rpx;
+	font-size: 26rpx;
 }
 
 .u-cell__title,

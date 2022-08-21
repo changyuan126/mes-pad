@@ -36,7 +36,7 @@
 					</view>
 				</view>
 				<view class="u-select__body">
-					<picker-view @change="columnChange" class="u-select__body__picker-view" :value="defaultSelector" @pickstart="pickstart" @pickend="pickend">
+					<picker-view @change="columnChange" class="u-select__body__picker-view" :value="defaultSelector" @pickstart="pickstart" @pickend="pickend" v-if="value">
 						<picker-view-column v-for="(item, index) in columnData" :key="index">
 							<view class="u-select__body__picker-view__item" v-for="(item1, index1) in item" :key="index1">
 								<view class="u-line-1">{{ item1[labelName] }}</view>
@@ -203,10 +203,6 @@ export default {
 			// #endif
 		},
 		init() {
-			// 如果没有数据的时候多处报未定义 aidex
-			if (!this.list || this.list.length == 0){
-				return
-			}
 			this.setColumnNum();
 			this.setDefaultSelector();
 			this.setColumnData();
@@ -229,7 +225,7 @@ export default {
 				let num = 1;
 				let column = this.list;
 				// 只要有元素并且第一个元素有children属性，继续历遍
-				while(column[0] && column[0][this.childName]) { // 增加 column[0] 判断，如果没有数据的时候会报 undefined aidex
+				while(column[0][this.childName]) {
 					column = column[0] ? column[0][this.childName] : {};
 					num ++;
 				}
@@ -282,12 +278,13 @@ export default {
 			let columnIndex = e.detail.value;
 			// 由于后面是需要push进数组的，所以需要先清空数组
 			this.selectValue = [];
+			this.defaultSelector = columnIndex;
 			if(this.mode == 'mutil-column-auto') {
 				// 对比前后两个数组，寻找变更的是哪一列，如果某一个元素不同，即可判定该列发生了变化
 				this.lastSelectIndex.map((val, idx) => {
 					if (val != columnIndex[idx]) index = idx;
 				});
-				this.defaultSelector = columnIndex;
+				
 				for (let i = index + 1; i < this.columnNum; i++) {
 					// 当前变化列的下一列的数据，需要获取上一列的数据，同时需要指定是上一列的第几个的children，再往后的
 					// 默认是队列的第一个为默认选项
@@ -298,9 +295,6 @@ export default {
 				// 在历遍的过程中，可能由于上一步修改this.columnData，导致产生连锁反应，程序触发columnChange，会有多次调用
 				// 只有在最后一次数据稳定后的结果是正确的，此前的历遍中，可能会产生undefined，故需要判断
 				columnIndex.map((item, index) => {
-					if (!this.columnData[index]){
-						return; // 如果列树不固定，会报空 aidex
-					}
 					let data = this.columnData[index][columnIndex[index]];
 					let tmp = {
 						value: data ? data[this.valueName] : null,
@@ -340,13 +334,15 @@ export default {
 		},
 		close() {
 			this.$emit('input', false);
+			// 重置default-value默认值
+			this.$set(this, 'defaultSelector', [0]);
 		},
 		// 点击确定或者取消
 		getResult(event = null) {
 			// #ifdef MP-WEIXIN
 			if (this.moving) return;
 			// #endif
-			if (event) this.$emit(event, this.selectValue, this.defaultSelector);
+			if (event) this.$emit(event, this.selectValue);
 			this.close();
 		},
 		selectHandler() {

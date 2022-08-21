@@ -5,11 +5,11 @@ import Vue from 'vue'
 Vue.config.productionTip = false
 App.mpType = 'app'
 
-import uView from 'uview-ui';
+import uView from '@/uview-ui';
 Vue.use(uView);
 
-import {router,RouterMount} from '@/router/router.js'  //路径换成自己的
-Vue.use(router)
+//import {router,RouterMount} from '@/router/router.js'  //路径换成自己的
+//Vue.use(router)
 
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
 
@@ -40,7 +40,7 @@ import httpApi from '@/common/http.api.js';
 Vue.use(httpApi, app);
 
 
-RouterMount(app,router,'#app');
+//RouterMount(app,router,'#app');
 
 app.$mount()
 

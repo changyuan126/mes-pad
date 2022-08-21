@@ -35,8 +35,7 @@
 		      <span v-else>登 录 中...</span>
 		    </button>
 		  </uni-forms-item>
-		</uni-forms>
-		
+		</uni-forms>		
 	</view>
 </template>
 

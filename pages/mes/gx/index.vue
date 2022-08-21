@@ -183,6 +183,7 @@
 
 <script>
 	export default{
+		name: "GxContent",
 		data(){
 			return {
 				title: "流转单打印",

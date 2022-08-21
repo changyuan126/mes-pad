@@ -16,11 +16,11 @@
 							{{this.vuex_user.nickName}}
 						</view>						
 					</view>				
-				<u-modal width="600px" v-model="showWorkstationFlag" title="请选择工作站" content="操作内容" >
+				<u-modal width="600px" v-model="showWorkstationFlag" :showConfirmButton=false :showCancelButton="true" title="请选择工作站" content="操作内容" >
 					<u-tabs :list="processList" :is-scroll="false" :current="currentFlag" name="processName" @change="getWorkstationList"> 						
 					</u-tabs>
 					<view class="station_list">
-						<u-card class="station_card" :show-foot="false" :title="'工作站'+card.workstationCode" v-for="card in workstationList">
+						<u-card  class="station_card" :show-foot="false" :title="'工作站'+card.workstationCode" :key="index"  v-for="(card,index) in workstationList">
 							<view class="" slot="body">
 								{{'工作站名称：'+card.workstationName}}
 								<u-button type="primary" @click="setWorkstation(card)">选择</u-button>
@@ -40,22 +40,27 @@
 			</view>
 		</view>
 		<view class="common-main">
-			<TabHeader></TabHeader>
-			<router-view></router-view>
-		</view>
-		
+			<TabHeader></TabHeader>			
+			<ProContent v-if="tabIndex == 'PRO'"></ProContent>
+			<GxContent v-else-if="tabIndex =='GX'"></GxContent>
+		</view>		
 	</view>
 </template>
 
 <script>
 	import TabHeader from "./TabHeader.vue"
+	import ProContent from "../mes/pro/index.vue"
+	import GxContent from "../mes/gx/index.vue"
 	export default {
 		name: 'HomePage',
 		components: {
-			TabHeader
+			TabHeader,
+			ProContent,
+			GxContent
 		},
 		data(){
 			return {
+				tabIndex: "PRO",
 				showWorkstationFlag: false,
 				showLogoutMenu: false,
 				activeProcess: null,
@@ -69,8 +74,15 @@
 			}
 		},
 		created() {
+			uni.$on('switchTab',(indexCode)=>{
+				console.log("switching detected:"+indexCode);
+				this.tabIndex = indexCode;
+			})
 			this.checkWorkstation();
 			this.getProcessList();
+		},
+		destroyed() {
+			uni.$off('switchTab');
 		},
 		methods: {
 			//用户部分点击
@@ -101,8 +113,9 @@
 				});
 			},
 			//获取工作站清单
-			getWorkstationList(index) {				
+			getWorkstationList(index) {			
 				this.currentFlag = index;
+				this.activeProcess= this.processList[index].processCode;
 				this.$u.api.getWorkstationList({
 					processCode: this.activeProcess
 				}).then(res => {
@@ -213,17 +226,19 @@
 	
 	.station_list {
 		display: flex;
+		flex-wrap: wrap;
 		width: 600px;
 	}
 	
 	.station_card {
-		width: 300px;
+		width: 250px;
 		height: 150px;
 	}
 	
 	.common-main {
 		padding: 10px 10px 0px 10px;
 		margin: 0;
+		height: 100%;
 		background-image: linear-gradient(to top right, rgb(19 26 56), rgb(33 64 128));
 	}
 	

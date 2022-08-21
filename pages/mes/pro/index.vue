@@ -1,154 +1,99 @@
 <template>
 	<view class="commonBody">
-		<el-row :gutter="20">
-			<el-col :span="11">
+		<view class="content">
+			<view class="content_left">
+				<view class="">
+					<u-button type="primary" width="100px"  @click="getTaskList()" >刷新</u-button>
+				</view>
 				<scroll-view scroll-y="true" class="scroll-Y">
-					
-					<el-card class="box-card" v-for="item in tableData">
-						<el-row>
-						  <el-col :span="14" class="item"><div class="name">任务编号：</div><div class="value">{{item.taskCode}}</div></el-col>
-						  <el-col :span="10" class="item"><div class="name">任务状态：</div><el-tag type="success" size="small" class="value">{{item.status}}</el-tag></el-col>
-						</el-row>
-						<el-row>
-						  <el-col :span="14" class="item"><div class="name">产品编码：</div><div class="value">{{item.itemCode}}</div></el-col>
-						  <el-col :span="10" class="item"><div class="name">产品名称：</div><div class="value">{{item.itemName}}</div></el-col>
-						</el-row>
-						<el-row>
-						  <el-col :span="14" class="item"><div class="name">排产数量：</div><div class="value">{{item.quantity}}</div></el-col>
-						  <el-col :span="10" class="item"><div class="name">生成数量：</div><div class="value">{{item.quantityProduced}}</div></el-col>
-						</el-row>
-						<el-button class="btn"
-							size="mini"	
-							type="primary"
-							icon="el-icon-refresh"
-							@click="shiftTask(item.taskId)"
-						  >切换</el-button>
-					</el-card>
-					
-					
+					<u-card class="task_card" :show-foot="false" :title="'任务编号：'+item.taskCode" :key="item.taskCode" v-for="item in tableData">
+						<view class="" slot="body">	
+							<u-row gutter="10">
+								<u-col span="8">
+									{{'产品编码：'+item.itemCode}}
+								</u-col>
+								<u-col span="4">
+									<u-tag type="success" v-if="item.status=='START'" text="生产中"/>
+									<u-tag type="warning" v-else-if="item.staus=='PAUSE'" text="暂停"/>
+									<u-tag type="primary" v-else text="未开始"/>									
+								</u-col>
+							</u-row>
+							
+							
+							
+							{{'产品名称：'+item.itemName}}
+							{{'排产数量：'+item.quantity}}
+							{{'生产数量：'+item.quantityProduced}}
+							<u-button type="primary" @click="shiftTask(item.taskId)">切换</u-button>
+						</view>
+					</u-card>																				
 				</scroll-view>				
-			</el-col>
-			<el-col :span="13">
-				<el-row :gutter="10" style="margin-top: 20px;" justify="center" type="flex">
-					<el-col :span="6">
-						<el-button type="primary" v-if="form.status =='NORMAL'" @click="changeStatus('START')" icon="el-icon-video-play">开始</el-button>
-						<el-button type="primary" v-else-if="form.status =='START'" @click="changeStatus('PAUSE')" icon="el-icon-video-play">暂停</el-button>
-						<el-button type="primary" v-else-if="form.status =='PAUSE'" @click="changeStatus('START')" icon="el-icon-video-play">继续</el-button>
-					</el-col>
-					<el-col :span="6">
-						<el-button type="primary" v-if="form.taskId !=null " @click="changeStatus('FINISHED')" icon="el-icon-video-pause">完成</el-button>
-					</el-col>
-					<el-col :span="6">
-						<el-button type="primary" @click="doFeedback" v-if="form.taskId !=null && form.status !='NORMAL'" icon="el-icon-edit-outline">生产报工</el-button>
-						<el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-							<el-form ref="feedback" :model="feedbackForm" :rules="rules" label-width="100px">
-								<el-row>
-									<el-col :span="12">
-										<el-form-item label="报工总数量" prop="quantity">
-											<el-input-number disabled v-model="feedbackForm.quantity"></el-input-number>
-										</el-form-item>
-									</el-col>
-									<el-col :span="12">
-										<el-form-item label="报工人" prop="nickName">
-											<el-input v-model="feedbackForm.nickName"></el-input>
-										</el-form-item>
-									</el-col>
-								</el-row>
-								<el-row>
-									<el-col :span="12">
-										<el-form-item label="合格品数量" prop="quantityQualify">
-											<el-input-number :min="0" @change="quantityChanged" v-model="feedbackForm.quantityQualify"></el-input-number>
-										</el-form-item>
-									</el-col>
-									<el-col :span="12">
-										<el-form-item label="不良品数量" prop="quantityUnqualify">
-											<el-input-number :min="0" @change="quantityChanged" v-model="feedbackForm.quantityUnqualify"></el-input-number>
-										</el-form-item>
-									</el-col>
-								</el-row>																							
-							</el-form>
-							<div slot="footer" class="dialog-footer">								
-								<el-button type="primary" @click="feedback()" >提 交</el-button>								
-								<el-button @click="cancel">取 消</el-button>
-							</div>
-						</el-dialog>
-					</el-col>
-					
-				</el-row>
-				<el-row :gutter="20">
-					<el-col :span="21">
-						<el-progress :text-inside="true" :stroke-width="26" :percentage="form.progress" status="success"></el-progress>
-					</el-col>					
-				</el-row>
-				<el-row :gutter="20">
-					<el-col :span="24">
-						<el-form :inline="true" label-width="80px" size="small" :model="form" label-position="left">
-							<el-row>
-								<el-col :span="12">
-									<el-form-item label="产品名称" prop="itemName">
-									    <el-input  v-model="form.itemName" />
-									</el-form-item>
-								</el-col>
-								<el-col :span="12">
-									<el-form-item label="产品编码" prop="itemCode">
-									    <el-input  v-model="form.itemCode" />
-									</el-form-item>
-								</el-col>
-							</el-row>
-							<el-row>								
-								<el-col :span="12">
-									<el-form-item label="单位" prop="unitOfMeasure">
-									    <el-input  v-model="form.unitOfMeasure" />
-									</el-form-item>
-								</el-col>	
-								<el-col :span="12">
-									<el-form-item label="任务编号" prop="workTaskCode">
-										<el-input  v-model="form.taskCode" />
-									</el-form-item>
-								</el-col>
-							</el-row>
-							<el-row>
-								<el-col :span="12">
-									<el-form-item label="任务数量" prop="quantity">
-										<el-input  v-model="form.quantity" />
-									</el-form-item>
-								</el-col>
-								<el-col :span="12">
-									<el-form-item label="生产数量" prop="quantityProduced">
-										<el-input  v-model="form.quantityProduced" />
-									</el-form-item>
-								</el-col>
-							</el-row>
-							<el-row>
-								<el-col :span="12">
-									<el-form-item label="良品数量" prop="quantityQuanlify">
-										<el-input  v-model="form.quantityQuanlify" />
-									</el-form-item>
-								</el-col>
-								<el-col :span="12">
-									<el-form-item label="不良数量" prop="quantityUnquanlify">
-										<el-input  v-model="form.quantityUnquanlify" />
-									</el-form-item>
-								</el-col>
-							</el-row>
-						</el-form>
-					</el-col>
-				</el-row>
-				<el-row>
-					<el-col :span="6" :offset="6">
-						<el-button type="primary" icon="el-icon-video-play">SOP</el-button>
-					</el-col>
-					<el-col :span="6">
-						<el-button type="primary" icon="el-icon-video-play">SIP</el-button>
-					</el-col>
-				</el-row>
-			</el-col>
-		</el-row>
+			</view>
+			<view class="content_right">
+				<view class="button_bar">
+					<u-button type="primary" v-if="form.status =='NORMAL'" @click="changeStatus('START')" >开始</u-button>
+					<u-button type="primary" v-else-if="form.status =='START'" @click="changeStatus('PAUSE')" >暂停</u-button>
+					<u-button type="primary" v-else-if="form.status =='PAUSE'" @click="changeStatus('START')" >继续</u-button>
+					<u-button type="primary" v-if="form.taskId !=null " @click="changeStatus('FINISHED')" >完成</u-button>
+					<u-button type="primary" @click="doFeedback" v-if="form.taskId !=null && form.status !='NORMAL'" >生产报工</u-button>
+				</view>
+				<u-modal :title="title" v-model="open" width="800px">
+					<uni-forms ref="feedback" :modelValue="feedbackForm" :rules="rules">
+						<uni-forms-item label="报工总数量" prop="quantity">
+							<u-number-box disabled v-model="feedbackForm.quantity"></u-number-box>
+						</uni-forms-item>
+						<uni-forms-item label="报工人" prop="nickName">
+							<u-input v-model="feedbackForm.nickName"></u-input>
+						</uni-forms-item>
+						<uni-forms-item label="合格品数量" prop="quantityQualify">
+							<u-number-box :min="0" @change="quantityChanged" v-model="feedbackForm.quantityQualify"></u-number-box>
+						</uni-forms-item>
+						<uni-forms-item label="不良品数量" prop="quantityUnqualify">
+							<u-number-box :min="0" @change="quantityChanged" v-model="feedbackForm.quantityUnqualify"></u-number-box>
+						</uni-forms-item>																											
+					</uni-forms>
+					<div slot="footer" class="dialog-footer">								
+						<u-button type="primary" @click="feedback()" >提 交</u-button>								
+						<u-button @click="cancel">取 消</u-button>
+					</div>
+				</u-modal>
+				<u-line-progress :showText="true" :height="26" :percentage="form.progress" ></u-line-progress>
+				<uni-forms :inline="true" label-width="80px" size="small" :model="form" label-position="left">
+					<uni-forms-item label="产品名称" prop="itemName">
+						<u-input  v-model="form.itemName" />
+					</uni-forms-item>
+					<uni-forms-item label="产品编码" prop="itemCode">
+						<u-input  v-model="form.itemCode" />
+					</uni-forms-item>
+					<uni-forms-item label="单位" prop="unitOfMeasure">
+						<u-input  v-model="form.unitOfMeasure" />
+					</uni-forms-item>
+					<uni-forms-item label="任务编号" prop="workTaskCode">
+						<u-input  v-model="form.taskCode" />
+					</uni-forms-item>
+					<uni-forms-item label="任务数量" prop="quantity">
+						<u-input  v-model="form.quantity" />
+					</uni-forms-item>
+					<uni-forms-item label="生产数量" prop="quantityProduced">
+						<u-input  v-model="form.quantityProduced" />
+					</uni-forms-item>
+					<uni-forms-item label="良品数量" prop="quantityQuanlify">
+						<u-input  v-model="form.quantityQuanlify" />
+					</uni-forms-item>
+					<uni-forms-item label="不良数量" prop="quantityUnquanlify">
+						<u-input  v-model="form.quantityUnquanlify" />
+					</uni-forms-item>							
+				</uni-forms>
+				<u-button type="primary" >SOP</u-button>
+				<u-button type="primary" >SIP</u-button>				
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
 	export default{
+		name: "pro_content",
 		data(){
 			return {
 				title: '生产报工',
@@ -249,42 +194,26 @@
 
 <style>
 	.commonBody{
-		background-color: #FEFEFF;
-		
+		background-color: #FEFEFF;		
 	}
 	
-	.scroll-Y{
-		height: 500px;
+	.content {
+		margin: 10px;
+		display: flex;
 	}
 	
-	.el-row{
-		margin-bottom: 20px;
+	.content_left {
+		width: 40%;
 	}
 	
-	.box-card{
+	.task_card {
 		width: 90%;
-		margin: 5%;
+		margin: 5px;
 	}
 	
 	
-	.box-card .item{
-		display: -webkit-box;
-	}
-	
-	.box-card .item .name{
-		width: 80px;
-	}
-	.box-card .item .value{
+	.content_right {
 		
 	}
 	
-	.box-card .el-card__body{
-		padding: 10px;
-	}
-	
-	.box-card .btn{
-		display: block;
-		margin: auto;
-		width: 140px;
-	}
 </style>

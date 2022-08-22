@@ -1,9 +1,9 @@
 <template>
 	<view class="commonBody">
-		<el-row :gutter="20">
-			<el-col :span="10">
+		<u-row :gutter="20">
+			<u-col :span="5">
 				<div class="leftSide">
-					<el-card  class="attention">
+					<u-card  class="attention">
 						<div slot="header" class="card_head">
 						    <span>{{"当前工序："+process.name}}</span>							    
 						</div>
@@ -12,80 +12,84 @@
 						</div>						
 						<scroll-view scroll-y="true" class="scroll-Y">
 							<div v-for="(item,index) in sopList" :key="index" class="sopDiv">
-								<el-card shadow="hover" class="sop-card">
+								<u-card shadow="hover" class="sop-card">
 									<div style="float:left;margin: 0 0;">
-										<el-popover>
+										<u-popup>
 											<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
-											<el-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></el-image>                        
-										</el-popover>
+											<u-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></u-image>                        
+										</u-popup>
 									</div>
 									
 									<div style="float: right;text-align:center;">
-										<el-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">											
-										</el-input>								
+										<u-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">											
+										</u-input>								
 									</div>
-								</el-card>
+								</u-card>
 							</div>
 						</scroll-view>
-					</el-card>					
+					</u-card>					
 				</div>																		
-			</el-col>
-			<el-col :span="14">
-				<el-row>
-					<el-col :span="24">
+			</u-col>
+			<u-col :span="7">
+				<u-row>
+					<u-col :span="12">
 						<div class="batch_head">
 							<span>{{"当前生产批次："}}</span>
-							<el-input style="width: 180px;" v-model="batchCode"></el-input>						
-							<el-button type="primary" style="float: right; margin:auto 5px" icon="el-icon-video-play">来料扫码</el-button>
-							<el-button type="primary" style="float: right; " @click="handleIssueShow" icon="el-icon-video-play">选择领料单</el-button>
+							<u-input style="width: 180px;" v-model="batchCode"></u-input>						
+							<u-button type="primary" style="float: right; margin:auto 5px" icon="el-icon-video-play">来料扫码</u-button>
+							<u-button type="primary" style="float: right; " @click="handleIssueShow" icon="el-icon-video-play">选择领料单</u-button>
 						</div>						
-					</el-col>
-				</el-row>
-				<el-dialog title="选择生产领料" :visible.sync="issueOpen" width="800px" append-to-body>
-					<el-tabs type="border-card">
-						<el-tab-pane label="领用到工作站">
-							<el-table v-loading="loading" :data="issueWSList">
-								<el-table-column label="批次号" align="center" prop="batchCode" />
-								<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
-								<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
-								<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 												
-								<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
-								<el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
-									<template slot-scope="scope">
-									  <el-button
-										size="mini"
-										type="text"
-										icon="el-icon-circle-check"
-										@click="handleAdd(scope.row)"						            
-									  >使用</el-button>
-									</template>
-								</el-table-column>
-							</el-table>							
-						</el-tab-pane>
-						<el-tab-pane label="领用到生产工单">
-							<el-table v-loading="loading" :data="issueWOList">
-								<el-table-column label="批次号" align="center" prop="batchCode" />
-								<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
-								<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
-								<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 												
-								<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
-								<el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
-									<template slot-scope="scope">
-									  <el-button
-										size="mini"			
-										icon="el-icon-circle-check"
-										@click="handleAdd(scope.row)"						            
-									  >使用</el-button>
-									</template>
-								</el-table-column>
-							</el-table>	
-						</el-tab-pane>
-					</el-tabs>
-					
+					</u-col>
+				</u-row>
+				<u-modal title="选择生产领料" v-model="issueOpen" width="800px">
+					<u-tabs :list="tabList" :current="currentTab" type="border-card" />
+					<view v-if="currentTab == 0">
+						<u-table  >
+							<u-tr>
+								<u-th>批次号</u-th>
+								<u-th>产品物料编码</u-th>
+								<u-th>产品物料名称</u-th>
+								<u-th>仓库名称</u-th>
+								<u-th>领料总数量</u-th>
+								<u-th>操作</u-th>
+							</u-tr>
+							<u-tr :key="issueCode" v-for="issue in issueWSList">
+								<u-th>{{issue.batchCode}}</u-th>
+								<u-th>{{issue.itemCode}}</u-th>
+								<u-th>{{issue.itemName}}</u-th>
+								<u-th>{{issue.warehouseName}}</u-th>
+								<u-th>{{issue.quantityIssued}}</u-th>
+								<u-th><u-button
+									size="mini"
+									type="text"
+									@click="handleAdd(issue)"						            
+								  >使用</u-button>
+								</u-th>
+							</u-tr>
+						</u-table>							
+					</view>
+					<view  v-else>
+						<el-table v-loading="loading" :data="issueWOList">
+							<el-table-column label="批次号" align="center" prop="batchCode" />
+							<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
+							<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
+							<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 												
+							<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
+							<el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
+								<template slot-scope="scope">
+								  <el-button
+									size="mini"			
+									icon="el-icon-circle-check"
+									@click="handleAdd(scope.row)"						            
+								  >使用</el-button>
+								</template>
+							</el-table-column>
+						</el-table>	
+					</view>
 					<div slot="footer" class="dialog-footer">													
 						<el-button @click="handleCancle">关 闭</el-button>
 					</div>
-				</el-dialog>
+				</u-modal>
 				<el-row>
 					<el-col :span="24">
 						<scroll-view scroll-y="true" class="scroll-item">
@@ -191,6 +195,12 @@
 				issueOpen: false,
 				feedbackFlag: 'Y', //是否在打印流转单的同时报工
 				batchCode:'202207191001',
+				tabList:[{
+					name:"领用到工作站"
+				},{
+					name:"领用到生产工单"
+				}],
+				currentTab: 0,
 				transForm: {},
 				rules: {
 					quantity_transfered: [

@@ -66,25 +66,33 @@
 						<u-button type="primary" @click="doFeedback" v-if="form.taskId !=null && form.status !='NORMAL'" >生产报工</u-button>
 					</u-col>
 				</u-row>
-				<u-modal :title="title" v-model="open" width="800px">
-					<u-form ref="feedback" :modelValue="feedbackForm" :rules="rules">
-						<u-form-item label="报工总数量" prop="quantity">
-							<u-number-box disabled v-model="feedbackForm.quantity"></u-number-box>
-						</u-form-item>
-						<u-form-item label="报工人" prop="nickName">
-							<u-input v-model="feedbackForm.nickName"></u-input>
-						</u-form-item>
-						<u-form-item label="合格品数量" prop="quantityQualify">
-							<u-number-box :min="0" @change="quantityChanged" v-model="feedbackForm.quantityQualify"></u-number-box>
-						</u-form-item>
-						<u-form-item label="不良品数量" prop="quantityUnqualify">
-							<u-number-box :min="0" @change="quantityChanged" v-model="feedbackForm.quantityUnqualify"></u-number-box>
-						</u-form-item>																											
+				<u-modal :title="title" @confirm="feedback()"  show-cancel-button :title-style="{'background-color':'#1E3770','color': '#FFFFFF'}" v-model="open" width="800px">
+					<u-form ref="feedbackForm" label-width="100px" :model="feedbackForm" :rules="rules">
+						<u-row>
+							<u-col span="6">
+								<u-form-item label="报工总数量" prop="quantity">
+									<u-number-box disabled v-model="feedbackForm.quantity"></u-number-box>
+								</u-form-item>
+							</u-col>
+							<u-col span="6">
+								<u-form-item label="报工人" prop="nickName">
+									<u-input v-model="feedbackForm.nickName"></u-input>
+								</u-form-item>
+							</u-col>
+						</u-row>
+						<u-row>
+							<u-col span="6">
+								<u-form-item label="合格品数量" prop="quantityQualify">
+									<u-number-box :min="0" @change="quantityChanged" v-model="feedbackForm.quantityQualify"></u-number-box>
+								</u-form-item>
+							</u-col>
+							<u-col span="6">
+								<u-form-item label="不良品数量" prop="quantityUnqualify">
+									<u-number-box :min="0" @change="quantityChanged" v-model="feedbackForm.quantityUnqualify"></u-number-box>
+								</u-form-item>	
+							</u-col>
+						</u-row>
 					</u-form>
-					<div slot="footer" class="dialog-footer">								
-						<u-button type="primary" @click="feedback()" >提 交</u-button>								
-						<u-button @click="cancel">取 消</u-button>
-					</div>
 				</u-modal>
 				
 				<u-form :inline="true" label-width="80px" size="small" :model="form" label-position="left">
@@ -98,57 +106,69 @@
 					<u-row gutter="16">
 						<u-col span="6">
 							<u-form-item label="产品编码" prop="itemCode">
-								<u-input  v-model="form.itemCode" />
+								<u-input disabled placeholder="" v-model="form.itemCode" />
 							</u-form-item>
 						</u-col>
 						<u-col span="6">
 							<u-form-item label="产品名称" prop="itemName">
-								<u-input  v-model="form.itemName" />
+								<u-input disabled placeholder="" v-model="form.itemName" />
 							</u-form-item>
 						</u-col>
 					</u-row>
 					<u-row gutter="16">
 						<u-col span="6">
 							<u-form-item label="单位" prop="unitOfMeasure">
-								<u-input  v-model="form.unitOfMeasure" />
+								<u-input disabled placeholder="" v-model="form.unitOfMeasure" />
 							</u-form-item>
 						</u-col>
 						<u-col span="6">
 							<u-form-item label="任务编号" prop="workTaskCode">
-								<u-input  v-model="form.taskCode" />
+								<u-input disabled placeholder="" v-model="form.taskCode" />
 							</u-form-item>
 						</u-col>
 					</u-row>
 					<u-row gutter="16">
 						<u-col span="6">
 							<u-form-item label="任务数量" prop="quantity">
-								<u-input  v-model="form.quantity" />
+								<u-input disabled placeholder="" v-model="form.quantity" />
 							</u-form-item>
 						</u-col>
 						<u-col span="6">
 							<u-form-item label="生产数量" prop="quantityProduced">
-								<u-input  v-model="form.quantityProduced" />
+								<u-input disabled placeholder="" v-model="form.quantityProduced" />
 							</u-form-item>
 						</u-col>
 					</u-row>
 					<u-row gutter="16">
 						<u-col span="6">
 							<u-form-item label="良品数量" prop="quantityQuanlify">
-								<u-input  v-model="form.quantityQuanlify" />
+								<u-input disabled placeholder="" v-model="form.quantityQuanlify" />
 							</u-form-item>
 						</u-col>
 						<u-col span="6">
 							<u-form-item label="不良数量" prop="quantityUnquanlify">
-								<u-input  v-model="form.quantityUnquanlify" />
+								<u-input disabled placeholder="" v-model="form.quantityUnquanlify" />
+							</u-form-item>	
+						</u-col>
+					</u-row>
+					<u-row>
+						<u-col span="6">
+							<u-form-item label="排产时间" prop="startTime">
+								<u-input disabled placeholder=""  v-model="form.startTime" />
+							</u-form-item>	
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="需求日期" prop="requestDate">
+								<u-input disabled placeholder="" v-model="form.requestDate" />
 							</u-form-item>	
 						</u-col>
 					</u-row>
 					<u-row gutter="16">
 						<u-col span="6">
-							<u-button type="primary" >SOP</u-button>
+							<u-button type="primary" >生产停机</u-button>
 						</u-col>
 						<u-col span="6">
-							<u-button type="primary" >SIP</u-button>
+							<u-button type="primary" >安灯呼叫</u-button>
 						</u-col>
 					</u-row>
 				</u-form>
@@ -267,6 +287,14 @@
 				this.open = false;
 			},
 			feedback(){
+				this.$refs.feedbackForm.validate(valid => {
+								if (valid) {
+									console.log('验证通过');
+								} else {
+									console.log('验证失败');
+								}
+				});
+				
 				this.$u.api.feedback({
 					taskId: this.form.taskId,
 					quantityFeedback: this.feedbackForm.quantity,

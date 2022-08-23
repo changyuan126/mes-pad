@@ -40,6 +40,7 @@ const install = (Vue, vm) => {
 		/**
 		 * 工艺工序相关API
 		 */
+		getProcessInfo: (params = {}) => vm.$u.get(config.adminPath+'/mobile/pro/process/'+params.processId),
 		//获取当前产品的SOP
 		getSopList: (params ={}) => vm.$u.get(config.adminPath+'/mobile/pro/taskissue/getSopList',params),
 		//生产投料

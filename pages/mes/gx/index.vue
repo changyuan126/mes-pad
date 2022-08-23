@@ -3,30 +3,29 @@
 		<u-row :gutter="20">
 			<u-col :span="5">
 				<div class="leftSide">
-					<u-card  class="attention">
-						<div slot="header" class="card_head">
-						    <span>{{"当前工序："+process.name}}</span>							    
-						</div>
-						<div>
-							{{"工艺要求："+process.attention}}
-						</div>						
-						<scroll-view scroll-y="true" class="scroll-Y">
-							<div v-for="(item,index) in sopList" :key="index" class="sopDiv">
-								<u-card shadow="hover" class="sop-card">
-									<div style="float:left;margin: 0 0;">
-										<u-popup>
-											<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
-											<u-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></u-image>                        
-										</u-popup>
-									</div>
-									
-									<div style="float: right;text-align:center;">
-										<u-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">											
-										</u-input>								
-									</div>
-								</u-card>
-							</div>
-						</scroll-view>
+					<u-card :title="'当前工序：'+process.processName"  box-shadow="0 4px 8px rgba(0, 0, 0, 0.2)" class="attention">
+						<view slot="body">
+							<view class="">
+								{{"工艺要求："+process.attention}}
+							</view>
+							<scroll-view scroll-y="true" class="scroll-Y">
+								<div v-for="(item,index) in sopList" :key="index" class="sopDiv">
+									<u-card shadow="hover" class="sop-card">
+										<div style="float:left;margin: 0 0;">
+											<u-popup>
+												<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
+												<u-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></u-image>                        
+											</u-popup>
+										</div>
+										
+										<div style="float: right;text-align:center;">
+											<u-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">											
+											</u-input>								
+										</div>
+									</u-card>
+								</div>
+							</scroll-view>
+						</view>					
 					</u-card>					
 				</div>																		
 			</u-col>
@@ -69,118 +68,121 @@
 						</u-table>							
 					</view>
 					<view  v-else>
-						<el-table v-loading="loading" :data="issueWOList">
-							<el-table-column label="批次号" align="center" prop="batchCode" />
-							<el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
-							<el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
-							<el-table-column label="仓库名称" align="center" prop="warehouseName" /> 												
-							<el-table-column label="领料总数量" align="center" prop="quantityIssued" />
-							<el-table-column label="操作" align="center" width="100px" class-name="small-padding fixed-width">
-								<template slot-scope="scope">
-								  <el-button
-									size="mini"			
-									icon="el-icon-circle-check"
-									@click="handleAdd(scope.row)"						            
-								  >使用</el-button>
-								</template>
-							</el-table-column>
-						</el-table>	
+						<u-table  >
+							<u-tr>
+								<u-th>批次号</u-th>
+								<u-th>产品物料编码</u-th>
+								<u-th>产品物料名称</u-th>
+								<u-th>仓库名称</u-th>
+								<u-th>领料总数量</u-th>
+								<u-th>操作</u-th>
+							</u-tr>
+							<u-tr :key="issueCode" v-for="issue in issueWOList">
+								<u-th>{{issue.batchCode}}</u-th>
+								<u-th>{{issue.itemCode}}</u-th>
+								<u-th>{{issue.itemName}}</u-th>
+								<u-th>{{issue.warehouseName}}</u-th>
+								<u-th>{{issue.quantityIssued}}</u-th>
+								<u-th><u-button
+									size="mini"
+									type="text"
+									@click="handleAdd(issue)"						            
+								  >使用</u-button>
+								</u-th>
+							</u-tr>
+						</u-table>									
 					</view>
-					<div slot="footer" class="dialog-footer">													
-						<el-button @click="handleCancle">关 闭</el-button>
-					</div>
 				</u-modal>
-				<el-row>
-					<el-col :span="24">
+				<u-row>
+					<u-col :span="12">
 						<scroll-view scroll-y="true" class="scroll-item">
 							<div class="info_card" v-for="item in itemData">
 								<div class="issue_info">
-									<el-row>
-										<el-col :span="12">
+									<u-row>
+										<u-col :span="6">
 											<span class="info_label">物料编码：</span>{{item.itemCode}}
-										</el-col>
-										<el-col :span="12">
+										</u-col>
+										<u-col :span="6">
 											<span class="info_label">物料名称：</span>{{item.itemName}}
-										</el-col>
-									</el-row>
-									<el-row>
-										<el-col :span="10">
+										</u-col>
+									</u-row>
+									<u-row>
+										<u-col :span="5">
 											<span class="info_label">规格型号：</span>{{item.spc}}
-										</el-col>
-										<el-col :span="6">
+										</u-col>
+										<u-col :span="3">
 											<span class="info_label">单位：</span>{{item.unitOfMeasure}}
-										</el-col>
-										<el-col :span="8">
+										</u-col>
+										<u-col :span="4">
 											<span class="info_label">投料数量：</span>{{item.quantityIssued}}	
-										</el-col>
-									</el-row>
+										</u-col>
+									</u-row>
 								</div>
 								<div class="issue_bt">
-									<el-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</el-button>
+									<u-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</u-button>
 								</div>	
 							</div>
 						</scroll-view>
-					</el-col>
-				</el-row>
-				<el-divider></el-divider>
-				<el-row>
-					<el-col :span="24">
-						<el-button type="primary" @click="printTrans" icon="el-icon-printer">打印流转单</el-button>
-					</el-col>
-				</el-row>
-				<el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-					<el-form ref="trans" :model="transForm" :rules="rules" label-width="100px">
-						<el-row>
-							<el-col :span="12">
-								<el-form-item label="产品名称" prop="itemName">
-								    <el-input  v-model="transForm.itemName" />
-								</el-form-item>
-							</el-col>
-							<el-col :span="12">
-								<el-form-item label="产品编码" prop="itemCode">
-								    <el-input  v-model="transForm.itemCode" />
-								</el-form-item>
-							</el-col>
-						</el-row>
-						<el-row>								
-							<el-col :span="12">
-								<el-form-item label="单位" prop="unitOfMeasure">
-								    <el-input  v-model="transForm.unitOfMeasure" />
-								</el-form-item>
-							</el-col>	
-							<el-col :span="12">
-								<el-form-item label="任务编号" prop="workTaskCode">
-									<el-input  v-model="transForm.taskCode" />
-								</el-form-item>
-							</el-col>
-						</el-row>
-						<el-row>
-							<el-col :span="12">
-								<el-form-item label="流转数量:" prop="quantity_transfered">
-									<el-input-number v-model="transForm.quantity_transfered"></el-input-number>
-								</el-form-item>
-							</el-col>
-							<el-col :span="12">
-								<el-form-item label="是否报工:">
-									<el-switch
+					</u-col>
+				</u-row>
+				<u-row>
+					<u-col :span="12">
+						<u-button type="primary" @click="printTrans" icon="el-icon-printer">打印流转单</u-button>
+					</u-col>
+				</u-row>
+				<u-modal :title="title" v-model="open" width="800px" >
+					<u-form ref="trans" :model="transForm" :rules="rules" label-width="100px">
+						<u-row>
+							<u-col :span="12">
+								<u-form-item label="产品名称" prop="itemName">
+								    <u-input  v-model="transForm.itemName" />
+								</u-form-item>
+							</u-col>
+							<u-col :span="12">
+								<u-form-item label="产品编码" prop="itemCode">
+								    <u-input  v-model="transForm.itemCode" />
+								</u-form-item>
+							</u-col>
+						</u-row>
+						<u-row>								
+							<u-col :span="12">
+								<u-form-item label="单位" prop="unitOfMeasure">
+								    <u-input  v-model="transForm.unitOfMeasure" />
+								</u-form-item>
+							</u-col>	
+							<u-col :span="12">
+								<u-form-item label="任务编号" prop="workTaskCode">
+									<u-input  v-model="transForm.taskCode" />
+								</u-form-item>
+							</u-col>
+						</u-row>
+						<u-row>
+							<u-col :span="12">
+								<u-form-item label="流转数量:" prop="quantity_transfered">
+									<u-number-box v-model="transForm.quantity_transfered"></u-number-box>
+								</u-form-item>
+							</u-col>
+							<u-col :span="12">
+								<u-form-item label="是否报工:">
+									<u-switch
 									  v-model="feedbackFlag"
 									  active-text="是"
 									  active-value="Y"
 									  inactive-text="否"
 									  inactive-value="N"
 									  >
-									</el-switch>									
-								</el-form-item>
-							</el-col>
-						</el-row>
-					</el-form>
+									</u-switch>									
+								</u-form-item>
+							</u-col>
+						</u-row>
+					</u-form>
 					<div slot="footer" class="dialog-footer">
-						<el-button type="primary" @click="submit()" >提 交</el-button>								
-						<el-button @click="cancel">取 消</el-button>
+						<u-button type="primary" @click="submit()" >提 交</u-button>								
+						<u-button @click="cancel">取 消</u-button>
 					</div>
-				</el-dialog>
-			</el-col>
-		</el-row>
+				</u-modal>
+			</u-col>
+		</u-row>
 	</view>
 </template>
 
@@ -208,7 +210,9 @@
 					]
 				},
 				process: {
-					name: "注塑",
+					processId: 0,
+					processCode: '',
+					processName: "注塑",
 					attention: "注塑工序说明"
 				},
 				sopList: [],
@@ -219,7 +223,8 @@
 			}	
 		},
 		created(){
-			if(this.vuex_task != null){
+			if(this.vuex_task != null){	
+				this.getProcessInfo();
 				this.getSopList();
 				this.getIssueList();
 			}else{
@@ -227,6 +232,22 @@
 			}
 		},
 		methods: {
+			//获取当前工序的信息
+			getProcessInfo(){
+				if(this.vuex_task != null){	
+					let that = this;
+					this.$u.api.getProcessInfo({
+						processId: this.vuex_workstation.processId								
+					}).then( res =>{
+						debugger;
+							if(res.code == '200'){
+								that.process = res.data;
+							}
+						}				
+					);
+				}
+			},
+			
 			//获取当前产品的SOP
 			getSopList(){
 				let that = this;

@@ -5,25 +5,31 @@
 				<div class="leftSide">
 					<u-card :title="'当前工序：'+process.processName"  box-shadow="0 4px 8px rgba(0, 0, 0, 0.2)" class="attention">
 						<view slot="body">
-							<view class="">
-								{{"工艺要求："+process.attention}}
-							</view>
+							<textarea
+								style="width:100%;height:100px"
+								v-model="'工艺说明：'+process.attention"
+							>
+							</textarea>
 							<scroll-view scroll-y="true" class="scroll-Y">
-								<div v-for="(item,index) in sopList" :key="index" class="sopDiv">
-									<u-card shadow="hover" class="sop-card">
-										<div style="float:left;margin: 0 0;">
-											<u-popup>
-												<img :src="sopList[index].sopUrl" slot="reference" class="image"/>
-												<u-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></u-image>                        
-											</u-popup>
-										</div>
-										
-										<div style="float: right;text-align:center;">
-											<u-input type="textarea" style="height: 100%;" v-model="sopList[index].sopDescription">											
-											</u-input>								
-										</div>
-									</u-card>
-								</div>
+								<view v-for="(item,index) in sopList" :key="index" class="sopDiv">
+									<view class="sop-img" @click="previewImg(index)">
+										<image :src="sopList[index].sopUrl"  class="image"/>												
+									</view>
+									<view class="sop-text">
+										<textarea
+											style="width:100%;height:50px"
+											v-model="sopList[index].sopTitle"
+										>
+										</textarea>
+										<textarea 
+											style="width:100%"
+											v-model="sopList[index].sopDescription"
+										>
+										</textarea>
+							
+									</view>	
+									<u-line type="primary" />
+								</view>
 							</scroll-view>
 						</view>					
 					</u-card>					
@@ -239,7 +245,6 @@
 					this.$u.api.getProcessInfo({
 						processId: this.vuex_workstation.processId								
 					}).then( res =>{
-						debugger;
 							if(res.code == '200'){
 								that.process = res.data;
 							}
@@ -264,6 +269,18 @@
 					}				
 				);
 			},
+			//预览SOP图片
+			previewImg(currentImg){
+				debugger;
+				const imgs = this.sopList.map(item =>{
+					return item.sopUrl;
+				});
+				
+				uni.previewImage({
+					currentImg,
+					imgs
+				})
+			},			
 			handleIssueShow(){
 				this.getReserveIssue();
 				this.issueOpen = true;
@@ -390,42 +407,53 @@
 		height: 200px;
 	}
 	
-	    .sopDiv{
-			width: 100%;
-	    }
+	.sopDiv{
+		width: 100%;
+		height: 200px;
+	}
 	
-	    .image{
-	        width:110px;
-	        height: 110px;
-	    }
+	.sop-img {
+		float:left;margin: 0 0;
+		width: 60%
+	}
 	
-	    .imagePreview {
-	        width: 600px;
-	        height: 500px;
-	    }
+	.sop-text {
+		float: right;text-align:center;
+		width: 40%
+	}
+	
+	.image{
+		width:100%;
+		height:200px;
+	}
+
+	.imagePreview {
+		width: 600px;
+		height: 500px;
+	}
 		
-		.batch_head {
-			margin-top: 5px;
-			margin-bottom: 5px;
-		}
+	.batch_head {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+	
+	.info_card {
+		height: 50px;
+		margin: 5px;
+		display: flex;
+		box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+	}
 		
-		.info_card {
-			height: 50px;
-			margin: 5px;
-			display: flex;
-			box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
-		}
-		
-		.issue_info {			
-			width: 435px;
-		}
-		
-		.info_label {
-			font-weight: bold;
-		}
-		
-		.issue_bt {			
-			width: 80px;
-		}
+	.issue_info {			
+		width: 435px;
+	}
+	
+	.info_label {
+		font-weight: bold;
+	}
+	
+	.issue_bt {			
+		width: 80px;
+	}
 		
 </style>

@@ -47,7 +47,7 @@
 					</u-col>
 				</u-row>
 				<u-modal title="选择生产领料" v-model="issueOpen" width="800px">
-					<u-tabs :list="tabList" :current="currentTab" type="border-card" />
+					<u-tabs :list="tabList" :current="currentTab" @change="changeTab" type="border-card" />
 					<view v-if="currentTab == 0">
 						<u-table  >
 							<u-tr>
@@ -280,7 +280,12 @@
 					currentImg,
 					imgs
 				})
-			},			
+			},
+			//切换TAB
+			changeTab(tab){
+				this.currentTab = tab; 
+			},
+				
 			handleIssueShow(){
 				this.getReserveIssue();
 				this.issueOpen = true;

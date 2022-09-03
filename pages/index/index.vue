@@ -17,7 +17,7 @@
 						</view>						
 					</view>				
 				<u-modal width="600px" v-model="showWorkstationFlag" :showConfirmButton=false :showCancelButton="true" title="请选择工作站" content="操作内容" >
-					<u-tabs :list="processList" :is-scroll="false" :current="currentFlag" name="processName" @change="getWorkstationList"> 						
+					<u-tabs :list="processList" :is-scroll="true" :current="currentFlag" name="processName" @change="getWorkstationList"> 						
 					</u-tabs>
 					<view class="station_list">
 						<u-card  class="station_card" :show-foot="false" :title="'工作站'+card.workstationCode" :key="index"  v-for="(card,index) in workstationList">
@@ -43,6 +43,7 @@
 			<TabHeader></TabHeader>			
 			<ProContent v-if="tabIndex == 'PRO'"></ProContent>
 			<GxContent v-else-if="tabIndex =='GX'"></GxContent>
+			<QcContent v-else-if="tabIndex =='QC'"></QcContent>
 		</view>		
 	</view>
 </template>
@@ -51,12 +52,14 @@
 	import TabHeader from "./TabHeader.vue"
 	import ProContent from "../mes/pro/index.vue"
 	import GxContent from "../mes/gx/index.vue"
+	import QcContent from "../mes/qc/index.vue"
 	export default {
 		name: 'HomePage',
 		components: {
 			TabHeader,
 			ProContent,
-			GxContent
+			GxContent,
+			QcContent
 		},
 		data(){
 			return {

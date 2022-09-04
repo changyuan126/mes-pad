@@ -1,194 +1,196 @@
 <template>
 	<view class="commonBody">
-		<u-row :gutter="20">
-			<u-col :span="5">
-				<div class="leftSide">
-					<u-card :title="'当前工序：'+process.processName"  box-shadow="0 4px 8px rgba(0, 0, 0, 0.2)" class="attention">
-						<view slot="body">
-							<textarea
-								style="width:100%;height:100px"
-								v-model="'工艺说明：'+process.attention"
-							>
-							</textarea>
-							<scroll-view scroll-y="true" class="scroll-Y">
-								<view v-for="(item,index) in sopList" :key="index" class="sopDiv">
-									<view class="sop-img" @click="previewImg(index)">
-										<image :src="sopList[index].sopUrl"  class="image"/>												
+		<view class="content">
+			<u-row :gutter="20">
+				<u-col :span="5">
+					<div class="leftSide">
+						<u-card :title="'当前工序：'+process.processName"  box-shadow="0 4px 8px rgba(0, 0, 0, 0.2)" class="attention">
+							<view slot="body">
+								<textarea
+									style="width:100%;height:100px"
+									v-model="'工艺说明：'+process.attention"
+								>
+								</textarea>
+								<scroll-view scroll-y="true" class="scroll-Y">
+									<view v-for="(item,index) in sopList" :key="index" class="sopDiv">
+										<view class="sop-img" @click="previewImg(index)">
+											<image :src="sopList[index].sopUrl"  class="image"/>												
+										</view>
+										<view class="sop-text">
+											<textarea
+												style="width:100%;height:50px"
+												v-model="sopList[index].sopTitle"
+											>
+											</textarea>
+											<textarea 
+												style="width:100%"
+												v-model="sopList[index].sopDescription"
+											>
+											</textarea>
+								
+										</view>	
+										<u-line type="primary" />
 									</view>
-									<view class="sop-text">
-										<textarea
-											style="width:100%;height:50px"
-											v-model="sopList[index].sopTitle"
-										>
-										</textarea>
-										<textarea 
-											style="width:100%"
-											v-model="sopList[index].sopDescription"
-										>
-										</textarea>
-							
-									</view>	
-									<u-line type="primary" />
-								</view>
-							</scroll-view>
-						</view>					
-					</u-card>					
-				</div>																		
-			</u-col>
-			<u-col :span="7">
-				<u-row>
-					<u-col :span="12">
-						<div class="batch_head">
-							<span>{{"当前生产批次："}}</span>
-							<u-input style="width: 180px;" v-model="batchCode"></u-input>						
-							<u-button type="primary" style="float: right; margin:auto 5px" icon="el-icon-video-play">来料扫码</u-button>
-							<u-button type="primary" style="float: right; " @click="handleIssueShow" icon="el-icon-video-play">选择领料单</u-button>
-						</div>						
-					</u-col>
-				</u-row>
-				<u-modal title="选择生产领料" v-model="issueOpen" width="800px">
-					<u-tabs :list="tabList" :current="currentTab" @change="changeTab" type="border-card" />
-					<view v-if="currentTab == 0">
-						<u-table  >
-							<u-tr>
-								<u-th>批次号</u-th>
-								<u-th>产品物料编码</u-th>
-								<u-th>产品物料名称</u-th>
-								<u-th>仓库名称</u-th>
-								<u-th>领料总数量</u-th>
-								<u-th>操作</u-th>
-							</u-tr>
-							<u-tr :key="issueCode" v-for="issue in issueWSList">
-								<u-th>{{issue.batchCode}}</u-th>
-								<u-th>{{issue.itemCode}}</u-th>
-								<u-th>{{issue.itemName}}</u-th>
-								<u-th>{{issue.warehouseName}}</u-th>
-								<u-th>{{issue.quantityIssued}}</u-th>
-								<u-th><u-button
-									size="mini"
-									type="text"
-									@click="handleAdd(issue)"						            
-								  >使用</u-button>
-								</u-th>
-							</u-tr>
-						</u-table>							
-					</view>
-					<view  v-else>
-						<u-table  >
-							<u-tr>
-								<u-th>批次号</u-th>
-								<u-th>产品物料编码</u-th>
-								<u-th>产品物料名称</u-th>
-								<u-th>仓库名称</u-th>
-								<u-th>领料总数量</u-th>
-								<u-th>操作</u-th>
-							</u-tr>
-							<u-tr :key="issueCode" v-for="issue in issueWOList">
-								<u-th>{{issue.batchCode}}</u-th>
-								<u-th>{{issue.itemCode}}</u-th>
-								<u-th>{{issue.itemName}}</u-th>
-								<u-th>{{issue.warehouseName}}</u-th>
-								<u-th>{{issue.quantityIssued}}</u-th>
-								<u-th><u-button
-									size="mini"
-									type="text"
-									@click="handleAdd(issue)"						            
-								  >使用</u-button>
-								</u-th>
-							</u-tr>
-						</u-table>									
-					</view>
-				</u-modal>
-				<u-row>
-					<u-col :span="12">
-						<scroll-view scroll-y="true" class="scroll-item">
-							<div class="info_card" v-for="item in itemData">
-								<div class="issue_info">
-									<u-row>
-										<u-col :span="6">
-											<span class="info_label">物料编码：</span>{{item.itemCode}}
-										</u-col>
-										<u-col :span="6">
-											<span class="info_label">物料名称：</span>{{item.itemName}}
-										</u-col>
-									</u-row>
-									<u-row>
-										<u-col :span="5">
-											<span class="info_label">规格型号：</span>{{item.spc}}
-										</u-col>
-										<u-col :span="3">
-											<span class="info_label">单位：</span>{{item.unitOfMeasure}}
-										</u-col>
-										<u-col :span="4">
-											<span class="info_label">投料数量：</span>{{item.quantityIssued}}	
-										</u-col>
-									</u-row>
+								</scroll-view>
+							</view>					
+						</u-card>					
+					</div>																		
+				</u-col>
+				<u-col :span="7">
+					<u-row>
+						<u-col :span="12">
+							<div class="batch_head">
+								<span>{{"当前生产批次："}}</span>
+								<u-input style="width: 180px;" v-model="batchCode"></u-input>						
+								<u-button type="primary" style="float: right; margin:auto 5px" icon="el-icon-video-play">来料扫码</u-button>
+								<u-button type="primary" style="float: right; " @click="handleIssueShow" icon="el-icon-video-play">选择领料单</u-button>
+							</div>						
+						</u-col>
+					</u-row>
+					<u-modal title="选择生产领料" v-model="issueOpen" width="800px">
+						<u-tabs :list="tabList" :current="currentTab" @change="changeTab" type="border-card" />
+						<view v-if="currentTab == 0">
+							<u-table  >
+								<u-tr>
+									<u-th>批次号</u-th>
+									<u-th>产品物料编码</u-th>
+									<u-th>产品物料名称</u-th>
+									<u-th>仓库名称</u-th>
+									<u-th>领料总数量</u-th>
+									<u-th>操作</u-th>
+								</u-tr>
+								<u-tr :key="issueCode" v-for="issue in issueWSList">
+									<u-th>{{issue.batchCode}}</u-th>
+									<u-th>{{issue.itemCode}}</u-th>
+									<u-th>{{issue.itemName}}</u-th>
+									<u-th>{{issue.warehouseName}}</u-th>
+									<u-th>{{issue.quantityIssued}}</u-th>
+									<u-th><u-button
+										size="mini"
+										type="text"
+										@click="handleAdd(issue)"						            
+									  >使用</u-button>
+									</u-th>
+								</u-tr>
+							</u-table>							
+						</view>
+						<view  v-else>
+							<u-table  >
+								<u-tr>
+									<u-th>批次号</u-th>
+									<u-th>产品物料编码</u-th>
+									<u-th>产品物料名称</u-th>
+									<u-th>仓库名称</u-th>
+									<u-th>领料总数量</u-th>
+									<u-th>操作</u-th>
+								</u-tr>
+								<u-tr :key="issueCode" v-for="issue in issueWOList">
+									<u-th>{{issue.batchCode}}</u-th>
+									<u-th>{{issue.itemCode}}</u-th>
+									<u-th>{{issue.itemName}}</u-th>
+									<u-th>{{issue.warehouseName}}</u-th>
+									<u-th>{{issue.quantityIssued}}</u-th>
+									<u-th><u-button
+										size="mini"
+										type="text"
+										@click="handleAdd(issue)"						            
+									  >使用</u-button>
+									</u-th>
+								</u-tr>
+							</u-table>									
+						</view>
+					</u-modal>
+					<u-row>
+						<u-col :span="12">
+							<scroll-view scroll-y="true" class="scroll-item">
+								<div class="info_card" v-for="item in itemData">
+									<div class="issue_info">
+										<u-row>
+											<u-col :span="6">
+												<span class="info_label">物料编码：</span>{{item.itemCode}}
+											</u-col>
+											<u-col :span="6">
+												<span class="info_label">物料名称：</span>{{item.itemName}}
+											</u-col>
+										</u-row>
+										<u-row>
+											<u-col :span="5">
+												<span class="info_label">规格型号：</span>{{item.spc}}
+											</u-col>
+											<u-col :span="3">
+												<span class="info_label">单位：</span>{{item.unitOfMeasure}}
+											</u-col>
+											<u-col :span="4">
+												<span class="info_label">投料数量：</span>{{item.quantityIssued}}	
+											</u-col>
+										</u-row>
+									</div>
+									<div class="issue_bt">
+										<u-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</u-button>
+									</div>	
 								</div>
-								<div class="issue_bt">
-									<u-button type="warning" @click="handleRemove(item)" icon="el-icon-delete">移除</u-button>
-								</div>	
-							</div>
-						</scroll-view>
-					</u-col>
-				</u-row>
-				<u-row>
-					<u-col :span="12">
-						<u-button type="primary" @click="printTrans" icon="el-icon-printer">打印流转单</u-button>
-					</u-col>
-				</u-row>
-				<u-modal :title="title" v-model="open" width="800px" >
-					<u-form ref="trans" :model="transForm" :rules="rules" label-width="100px">
-						<u-row>
-							<u-col :span="12">
-								<u-form-item label="产品名称" prop="itemName">
-								    <u-input  v-model="transForm.itemName" />
-								</u-form-item>
-							</u-col>
-							<u-col :span="12">
-								<u-form-item label="产品编码" prop="itemCode">
-								    <u-input  v-model="transForm.itemCode" />
-								</u-form-item>
-							</u-col>
-						</u-row>
-						<u-row>								
-							<u-col :span="12">
-								<u-form-item label="单位" prop="unitOfMeasure">
-								    <u-input  v-model="transForm.unitOfMeasure" />
-								</u-form-item>
-							</u-col>	
-							<u-col :span="12">
-								<u-form-item label="任务编号" prop="workTaskCode">
-									<u-input  v-model="transForm.taskCode" />
-								</u-form-item>
-							</u-col>
-						</u-row>
-						<u-row>
-							<u-col :span="12">
-								<u-form-item label="流转数量:" prop="quantity_transfered">
-									<u-number-box v-model="transForm.quantity_transfered"></u-number-box>
-								</u-form-item>
-							</u-col>
-							<u-col :span="12">
-								<u-form-item label="是否报工:">
-									<u-switch
-									  v-model="feedbackFlag"
-									  active-text="是"
-									  active-value="Y"
-									  inactive-text="否"
-									  inactive-value="N"
-									  >
-									</u-switch>									
-								</u-form-item>
-							</u-col>
-						</u-row>
-					</u-form>
-					<div slot="footer" class="dialog-footer">
-						<u-button type="primary" @click="submit()" >提 交</u-button>								
-						<u-button @click="cancel">取 消</u-button>
-					</div>
-				</u-modal>
-			</u-col>
-		</u-row>
+							</scroll-view>
+						</u-col>
+					</u-row>
+					<u-row>
+						<u-col :span="12">
+							<u-button type="primary" @click="printTrans" icon="el-icon-printer">打印流转单</u-button>
+						</u-col>
+					</u-row>
+					<u-modal :title="title" v-model="open" width="800px" >
+						<u-form ref="trans" :model="transForm" :rules="rules" label-width="100px">
+							<u-row>
+								<u-col :span="12">
+									<u-form-item label="产品名称" prop="itemName">
+									    <u-input  v-model="transForm.itemName" />
+									</u-form-item>
+								</u-col>
+								<u-col :span="12">
+									<u-form-item label="产品编码" prop="itemCode">
+									    <u-input  v-model="transForm.itemCode" />
+									</u-form-item>
+								</u-col>
+							</u-row>
+							<u-row>								
+								<u-col :span="12">
+									<u-form-item label="单位" prop="unitOfMeasure">
+									    <u-input  v-model="transForm.unitOfMeasure" />
+									</u-form-item>
+								</u-col>	
+								<u-col :span="12">
+									<u-form-item label="任务编号" prop="workTaskCode">
+										<u-input  v-model="transForm.taskCode" />
+									</u-form-item>
+								</u-col>
+							</u-row>
+							<u-row>
+								<u-col :span="12">
+									<u-form-item label="流转数量:" prop="quantity_transfered">
+										<u-number-box v-model="transForm.quantity_transfered"></u-number-box>
+									</u-form-item>
+								</u-col>
+								<u-col :span="12">
+									<u-form-item label="是否报工:">
+										<u-switch
+										  v-model="feedbackFlag"
+										  active-text="是"
+										  active-value="Y"
+										  inactive-text="否"
+										  inactive-value="N"
+										  >
+										</u-switch>									
+									</u-form-item>
+								</u-col>
+							</u-row>
+						</u-form>
+						<div slot="footer" class="dialog-footer">
+							<u-button type="primary" @click="submit()" >提 交</u-button>								
+							<u-button @click="cancel">取 消</u-button>
+						</div>
+					</u-modal>
+				</u-col>
+			</u-row>
+		</view>		
 	</view>
 </template>
 
@@ -378,6 +380,10 @@
 	.commonBody{
 		background-color: #FEFEFF;
 		
+	}
+	
+	.content {
+		margin: 10px;
 	}
 	
 	.sop-card {

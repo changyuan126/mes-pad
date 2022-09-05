@@ -2,7 +2,7 @@
 	<view class="commonBody" :style="{ 'height': (this.screenHeight -140) + 'px' }">
 		<view class="content">
 			<view class="button-bar">
-				<view class="button-frame" @click="">
+				<view class="button-frame" @click="addIQC">
 					<view class="shortcut-icon icon-color01">
 						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
 					</view>
@@ -46,7 +46,7 @@
 				</view>			
 			</view>
 			<view class="list-bar">
-				<scroll-view scroll-y="true" class="scroll-list" :style="{ 'height': (this.screenHeight -240) + 'px' }">
+				<scroll-view scroll-y="true" class="scroll-list" :style="{ 'height': (this.screenHeight -280) + 'px' }">
 					<uni-table ref="qcTable" border  stripe  :loading="loading" emptyText="未查询到数据" >
 						<uni-tr>
 							<uni-th width="160px" align="center">检验单编号</uni-th>
@@ -74,9 +74,83 @@
 								</view>
 							</uni-td>
 						</uni-tr>
-					</uni-table>
+					</uni-table>					
 				</scroll-view>
+				<view class="uni-pagination-box"><uni-pagination show-icon :page-size="queryParams.pageSize" :current="queryParams.pageCurrent" :total="queryParams.total" @change="getList" /></view>
 			</view>
+			<u-modal width="760px" v-model="iqcModalFlag" :showConfirmButton=true :showCancelButton="true" title="请填写来料检验单" content="操作内容" >
+				<u-form ref="iqcForm" label-width="100px" :model="iqcForm" :rules="iqcRules">	
+					<u-row>
+						<u-col span="6">
+							<u-form-item label="供应商编号" prop="vendorCode">								
+								<u-input v-model="iqcForm.vendorCode"></u-input>
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="供应商名称" prop="vendorName">
+								<u-input disabled v-model="iqcForm.vendorName"></u-input>
+							</u-form-item>
+						</u-col>
+					</u-row>
+					<u-row>
+						<u-col span="6">
+							<u-form-item label="批次号" prop="batchCode">
+								<u-input v-model="iqcForm.batchCode"></u-input>
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="检测数量" prop="quantityChecked">
+								<u-number-box v-model="iqcForm.quantityChecked"></u-number-box>
+							</u-form-item>
+						</u-col>
+					</u-row>
+					<u-row>
+						<u-col span="6">
+							<u-form-item label="检测结果" prop="checkResult">
+								<radio-group>
+									<radio value="ACCEPT">合格</radio>
+									<radio value="REJECT">不合格</radio>
+								</radio-group>								
+							</u-form-item>
+						</u-col>
+						<u-col span="6">
+							<u-form-item label="检测人员" prop="inspector">
+								<u-input v-model="iqcForm.inspector"></u-input>
+							</u-form-item>
+						</u-col>
+					</u-row>
+				</u-form>				
+				<scroll-view scroll-y="true" scroll-x="true" class="line-list">
+					<view class="line-content">
+						<uni-table ref="iqcLineTable" class="line-table" border  stripe  :loading="loading" emptyText="未查询到数据" >
+							<uni-tr>
+								<uni-th width="160px" align="center">检测项名称</uni-th>
+								<uni-th width="100px" align="center">检测类型</uni-th>
+								<uni-th width="150px" align="center">检测工具</uni-th>
+								<uni-th width="150px" align="center">检测要求</uni-th>
+								<uni-th width="100px" align="center">标准值</uni-th>
+								<uni-th width="100px" align="center">单位</uni-th>
+								<uni-th width="100px" align="center">误差上限</uni-th>
+								<uni-th width="100px" align="center">误差下限</uni-th>
+								<uni-th width="100px" align="center">致命缺陷数量</uni-th>
+								<uni-th width="100px" align="center">严重缺陷数量</uni-th>
+								<uni-th width="100px" align="center">轻微缺陷数量</uni-th>
+								<uni-th width="150px" align="center">操作</uni-th>
+							</uni-tr>
+						</uni-table>
+					</view>		
+				</scroll-view>						
+			</u-modal>
+			<u-modal width="600px" v-model="pqcModalFlag" :showConfirmButton=false :showCancelButton="true" title="请填写过程检验单" content="操作内容" >
+				<u-form ref="pqcForm" label-width="100px" :model="pqcForm" :rules="pqcRules">
+					
+				</u-form>		
+			</u-modal>
+			<u-modal width="600px" v-model="oqcModalFlag" :showConfirmButton=false :showCancelButton="true" title="请填写出货检验单" content="操作内容" >
+				<u-form ref="oqcForm" label-width="100px" :model="oqcForm" :rules="oqcRules">
+					
+				</u-form>
+			</u-modal>
 		</view>		
 	</view>
 </template>
@@ -87,7 +161,19 @@
 		data(){
 			return {
 				screenHeight: 768,
+				queryParams: {
+					pageNum: 1,
+					pageSize: 10,
+					total: 0,
+					pageCurrent: 1
+				},
 				loading: false,
+				iqcModalFlag: false,
+				pqcModalFlag: false,
+				oqcModalFlag: false,
+				iqcForm:{},
+				pqcForm:{},
+				oqcForm:{},
 				//所有检测单的列表
 				qcList: [
 					{
@@ -212,6 +298,14 @@
 					this.screenHeight = res.windowHeight;
 				}
 			})
+		},
+		methods: {
+			getList(){
+				
+			},
+			addIQC(){
+				this.iqcModalFlag = true;
+			}
 		}
 	}
 </script>
@@ -261,6 +355,24 @@
 	 
 	 .scroll-list {
 		height: ;
+	 }
+	 
+	 .line-list{
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		height: 200px;
+	 }
+	 
+	 .line-content {
+	 		width: 200%;
+	 		height: 300px;
+	 		display: flex;
+	 		flex-wrap: nowrap;
+	 }
+	 
+	 .line-table{
+		 display:inline-block;
 	 }
 	 
 	 .uni-group {

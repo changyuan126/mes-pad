@@ -172,8 +172,11 @@
 				pqcModalFlag: false,
 				oqcModalFlag: false,
 				iqcForm:{},
+				iqcRules:[],
 				pqcForm:{},
+				pqcRules:[],
 				oqcForm:{},
+				oqcRules:[],
 				//所有检测单的列表
 				qcList: [
 					{

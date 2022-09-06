@@ -56,6 +56,10 @@ const install = (Vue, vm) => {
 		//打印流转单
 		
 		
+		//质量相关api
+		//获取当前产品、当前质检类型的质检模板行信息
+		getQcTemplateLine: (params = {}) => vm.$u.get(config.adminPath+'/mobile/qc/templateIndex/getLines',params),
+		
 		
 		//首页相关api
 		getIndexCardInfo: (params = {}) => vm.$u.get(config.adminPath+'/mobile/index/getIndexCardInfo', params),

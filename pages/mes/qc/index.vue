@@ -1,49 +1,37 @@
 <template>
 	<view class="commonBody" :style="{ 'height': (this.screenHeight -140) + 'px' }">
 		<view class="content">
-			<view class="button-bar">
-				<view class="button-frame" @click="addIQC">
-					<view class="shortcut-icon icon-color01">
-						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
-					</view>
-					<view class="grid-text">来料检验</view>
-				</view>				
-				<view class="button-frame">
+			<view class="button-bar">			
+				<view class="button-frame" @click="addQC('FIRST')">
 					<view class="shortcut-icon icon-color01">
 						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
 					</view>
 					<view class="grid-text">首检</view>
 				</view>
-				<view class="button-frame">
+				<view class="button-frame" @click="addQC('LAST')">
 					<view class="shortcut-icon icon-color01">
 						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
 					</view>
 					<view class="grid-text">末检</view>
 				</view>
-				<view class="button-frame">
+				<view class="button-frame" @click="addQC('SELF')">
 					<view class="shortcut-icon icon-color01">
 						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
 					</view>
 					<view class="grid-text">自检</view>
 				</view>
-				<view class="button-frame">
+				<view class="button-frame" @click="addQC('PATROL')">
 					<view class="shortcut-icon icon-color01">
 						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
 					</view>
 					<view class="grid-text">巡检</view>
 				</view>
-				<view class="button-frame">
+				<view class="button-frame" @click="addQC('FQC')">
 					<view class="shortcut-icon icon-color01">
 						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
 					</view>
 					<view class="grid-text">终检</view>
-				</view>
-				<view class="button-frame">
-					<view class="shortcut-icon icon-color01">
-						<img class="icon-button" :src="require('@/static/icons/png/pro.png')" alt="">
-					</view>
-					<view class="grid-text">出货检验</view>
-				</view>			
+				</view>		
 			</view>
 			<view class="list-bar">
 				<scroll-view scroll-y="true" class="scroll-list" :style="{ 'height': (this.screenHeight -280) + 'px' }">
@@ -78,29 +66,17 @@
 				</scroll-view>
 				<view class="uni-pagination-box"><uni-pagination show-icon :page-size="queryParams.pageSize" :current="queryParams.pageCurrent" :total="queryParams.total" @change="getList" /></view>
 			</view>
-			<u-modal width="760px" v-model="iqcModalFlag" :showConfirmButton=true :showCancelButton="true" title="请填写来料检验单" content="操作内容" >
-				<u-form ref="iqcForm" label-width="100px" :model="iqcForm" :rules="iqcRules">	
-					<u-row>
-						<u-col span="6">
-							<u-form-item label="供应商编号" prop="vendorCode">								
-								<u-input v-model="iqcForm.vendorCode"></u-input>
-							</u-form-item>
-						</u-col>
-						<u-col span="6">
-							<u-form-item label="供应商名称" prop="vendorName">
-								<u-input disabled v-model="iqcForm.vendorName"></u-input>
-							</u-form-item>
-						</u-col>
-					</u-row>
+			<u-modal width="760px" v-model="qcModalFlag" :showConfirmButton=true :showCancelButton="true" title="请填写检验单" content="操作内容" >
+				<u-form ref="qcForm" label-width="100px" :model="qcForm" :rules="qcRules">						
 					<u-row>
 						<u-col span="6">
 							<u-form-item label="批次号" prop="batchCode">
-								<u-input v-model="iqcForm.batchCode"></u-input>
+								<u-input v-model="qcForm.batchCode"></u-input>
 							</u-form-item>
 						</u-col>
 						<u-col span="6">
 							<u-form-item label="检测数量" prop="quantityChecked">
-								<u-number-box v-model="iqcForm.quantityChecked"></u-number-box>
+								<u-number-box v-model="qcForm.quantityChecked"></u-number-box>
 							</u-form-item>
 						</u-col>
 					</u-row>
@@ -115,17 +91,16 @@
 						</u-col>
 						<u-col span="6">
 							<u-form-item label="检测人员" prop="inspector">
-								<u-input v-model="iqcForm.inspector"></u-input>
+								<u-input v-model="qcForm.inspector"></u-input>
 							</u-form-item>
 						</u-col>
 					</u-row>
 				</u-form>				
 				<scroll-view scroll-y="true" scroll-x="true" class="line-list">
 					<view class="line-content">
-						<uni-table ref="iqcLineTable" class="line-table" border  stripe  :loading="loading" emptyText="未查询到数据" >
+						<uni-table ref="qcLineTable" class="line-table" border  stripe  :loading="loading" emptyText="未查询到数据" >
 							<uni-tr>
 								<uni-th width="160px" align="center">检测项名称</uni-th>
-								<uni-th width="100px" align="center">检测类型</uni-th>
 								<uni-th width="150px" align="center">检测工具</uni-th>
 								<uni-th width="150px" align="center">检测要求</uni-th>
 								<uni-th width="100px" align="center">标准值</uni-th>
@@ -137,17 +112,30 @@
 								<uni-th width="100px" align="center">轻微缺陷数量</uni-th>
 								<uni-th width="150px" align="center">操作</uni-th>
 							</uni-tr>
+							<uni-tr v-for="(line,index) in qcLines" :key="index">
+								<uni-td align="center">{{line.indexName}}</uni-td>
+								<uni-td align="center">{{line.qcTool}}</uni-td>
+								<uni-td>{{line.checkMethod}}</uni-td>
+								<uni-td align="center">{{line.standerVal}}</uni-td>
+								<uni-td align="center">{{line.unitOfMeasure}}</uni-td>
+								<uni-td align="center">{{line.thresholdMax}}</uni-td>
+								<uni-td align="center">{{line.thresholdMin}}</uni-td>
+								<uni-td align="center">{{'0'}}</uni-td>
+								<uni-td align="center">{{'0'}}</uni-td>
+								<uni-td align="center">{{'0'}}</uni-td>
+								<uni-td>
+									<view class="uni-group">
+										<button class="uni-button" size="mini" type="primary">缺陷登记</button>
+									</view>
+								</uni-td>
+							</uni-tr>
 						</uni-table>
 					</view>		
 				</scroll-view>						
 			</u-modal>
-			<u-modal width="600px" v-model="pqcModalFlag" :showConfirmButton=false :showCancelButton="true" title="请填写过程检验单" content="操作内容" >
-				<u-form ref="pqcForm" label-width="100px" :model="pqcForm" :rules="pqcRules">
-					
-				</u-form>		
-			</u-modal>
-			<u-modal width="600px" v-model="oqcModalFlag" :showConfirmButton=false :showCancelButton="true" title="请填写出货检验单" content="操作内容" >
-				<u-form ref="oqcForm" label-width="100px" :model="oqcForm" :rules="oqcRules">
+
+			<u-modal width="760px" v-model="qcEditModalFlag" :showConfirmButton=false :showCancelButton="true" title="请填写出货检验单" content="操作内容" >
+				<u-form ref="qcEditForm" label-width="100px" :model="qcEditForm" :rules="qcEditRules">
 					
 				</u-form>
 			</u-modal>
@@ -168,15 +156,16 @@
 					pageCurrent: 1
 				},
 				loading: false,
-				iqcModalFlag: false,
-				pqcModalFlag: false,
-				oqcModalFlag: false,
-				iqcForm:{},
-				iqcRules:[],
-				pqcForm:{},
-				pqcRules:[],
-				oqcForm:{},
-				oqcRules:[],
+				//新增弹窗
+				qcModalFlag: false,
+				qcForm:{},
+				qcRules:[],				
+				qcLines: [],
+				//编辑弹窗
+				qcEditModalFlag: false,
+				qcEditForm:{},
+				qcEditRules:[],
+				qcEditLines:[],
 				//所有检测单的列表
 				qcList: [
 					{
@@ -303,11 +292,23 @@
 			})
 		},
 		methods: {
-			getList(){
-				
+			getTemplateLineList(type){			
+				debugger;
+				this.$u.api.getQcTemplateLine({
+					itemId: this.vuex_task.itemId,
+					qcType: type
+				}).then( res =>{
+						if(res.code == '200'){
+							this.qcLines = res.data;
+						}else{
+							this.$u.toast(res.msg);
+						}
+					}				
+				);
 			},
-			addIQC(){
-				this.iqcModalFlag = true;
+			addQC(type){
+				this.qcModalFlag = true;
+				this.getTemplateLineList(type);
 			}
 		}
 	}

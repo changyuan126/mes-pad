@@ -58,7 +58,7 @@ const install = (Vue, vm) => {
 		
 		//质量相关api
 		//获取当前产品、当前质检类型的质检模板行信息
-		getQcTemplateLine: (params = {}) => vm.$u.get(config.adminPath+'/mobile/qc/templateIndex/getLines',params),
+		getQcTemplateLine: (params = {}) => vm.$u.get(config.adminPath+'/mobile/qc/templateindex/getLines',params),
 		
 		
 		//首页相关api

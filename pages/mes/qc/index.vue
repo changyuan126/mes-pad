@@ -139,6 +139,32 @@
 					
 				</u-form>
 			</u-modal>
+			
+			<u-modal width="600px" v-model="deffectModalFlag" :showConfirmButton=true :showCancelButton=true title="缺陷登记">
+				<u-form ref="deffectForm" label-width="100px" :model="deffectForm" :rules="deffectRules">
+					<u-row>
+						<u-col>
+							<u-form-item label="缺陷产品数量" prop="quantityChecked">
+								<u-number-box v-model="qcForm.quantityChecked"></u-number-box>
+							</u-form-item>
+						</u-col>
+						<u-col>
+							<u-form-item label="缺陷等级" prop="checkResult">
+								<radio-group>
+									<radio value="CR">致命缺陷</radio>
+									<radio value="MAJ">严重缺陷</radio>
+									<radio value="MIN">轻微缺陷</radio>
+								</radio-group>								
+							</u-form-item>
+						</u-col>
+						<u-col>
+							
+						</u-col>
+					</u-row>
+				</u-form>
+			</u-modal>
+			
+			
 		</view>		
 	</view>
 </template>
@@ -293,7 +319,6 @@
 		},
 		methods: {
 			getTemplateLineList(type){			
-				debugger;
 				this.$u.api.getQcTemplateLine({
 					itemId: this.vuex_task.itemId,
 					qcType: type
@@ -365,7 +390,7 @@
 		width: 100%;
 		white-space: nowrap;
 		overflow: hidden;
-		height: 200px;
+		height: 300px;
 	 }
 	 
 	 .line-content {
